@@ -375,7 +375,6 @@ export default function Home() {
                         ))}
                       </div>
                       <div className="mt-4 flex flex-col gap-3 border-t border-orange-100 pt-3 text-xs text-orange-800 sm:flex-row sm:items-center sm:justify-between">
-                        <p>Bu soruyu eklemek istemiyor musun? Atla dediğinde kuyruğun sonuna gider ve tekrar karşına çıkar.</p>
                         <div className="flex flex-wrap items-center gap-2">
                           <button
                             onClick={() => setShowCustomEditor((prev) => !prev)}
@@ -420,11 +419,10 @@ export default function Home() {
                               {customOptionInputs.map((option, index) => (
                                 <div
                                   key={index}
-                                  className={`rounded-xl border px-3 py-3 text-sm font-medium shadow-sm transition focus-within:border-orange-400 ${
-                                    customAnswer === option.trim()
+                                  className={`rounded-xl border px-3 py-3 text-sm font-medium shadow-sm transition focus-within:border-orange-400 ${customAnswer === option.trim()
                                       ? "border-orange-400 bg-white"
                                       : "border-orange-200 bg-white"
-                                  }`}
+                                    }`}
                                 >
                                   <input
                                     value={option}
@@ -489,11 +487,10 @@ export default function Home() {
                               <button
                                 key={option}
                                 onClick={() => setCreatorAnswers((prev) => ({ ...prev, [question.id]: option }))}
-                                className={`rounded-lg border px-2 py-2 text-left transition ${
-                                  creatorAnswers[question.id] === option
+                                className={`rounded-lg border px-2 py-2 text-left transition ${creatorAnswers[question.id] === option
                                     ? "border-orange-400 bg-orange-50"
                                     : "border-zinc-200 hover:border-orange-200"
-                                }`}
+                                  }`}
                               >
                                 {option}
                               </button>
