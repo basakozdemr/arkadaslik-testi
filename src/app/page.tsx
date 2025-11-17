@@ -149,6 +149,7 @@ export default function Home() {
   const [creatorAnswers, setCreatorAnswers] = useState<Record<string, string>>({});
   const [generatedLink, setGeneratedLink] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
+  const [showShareModal, setShowShareModal] = useState(false);
   const [solveLink, setSolveLink] = useState("");
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [friendAnswers, setFriendAnswers] = useState<Record<string, string>>({});
@@ -240,6 +241,7 @@ export default function Home() {
     const code = Math.random().toString(36).slice(2, 8).toUpperCase();
     setGeneratedLink(`https://arkadaslik.app/test/${code}`);
     setCopied(false);
+    setShowShareModal(true);
   };
 
   const handleCopy = async () => {
@@ -661,6 +663,42 @@ export default function Home() {
           </section>
         )}
       </main>
+
+      {showShareModal && generatedLink && (
+        <div className="fixed inset-0 z-30 flex items-center justify-center bg-zinc-900/50 px-4">
+          <div className="w-full max-w-md rounded-2xl bg-white p-6 shadow-2xl shadow-orange-200">
+            <div className="flex items-start justify-between gap-4">
+              <div>
+                <p className="text-sm font-semibold text-orange-700">Bu linki arkadaşlarınla paylaş</p>
+                <p className="text-lg font-bold text-zinc-900">Testin hazır! Göndermeden önce kopyala.</p>
+              </div>
+              <button
+                onClick={() => setShowShareModal(false)}
+                className="rounded-full bg-orange-50 px-3 py-1 text-xs font-semibold text-orange-700 hover:bg-orange-100"
+              >
+                Kapat
+              </button>
+            </div>
+            <div className="mt-4 rounded-xl border border-orange-100 bg-orange-50 p-3 text-sm text-zinc-800">
+              <p className="break-all font-medium">{generatedLink}</p>
+            </div>
+            <div className="mt-3 grid gap-3 sm:grid-cols-2">
+              <button
+                onClick={handleCopy}
+                className="rounded-xl bg-orange-600 px-4 py-2 text-sm font-semibold text-white shadow-sm shadow-orange-200 transition hover:-translate-y-0.5"
+              >
+                {copied ? "Kopyalandı" : "Linki kopyala"}
+              </button>
+              <button
+                onClick={() => setShowShareModal(false)}
+                className="rounded-xl bg-white px-4 py-2 text-sm font-semibold text-orange-700 shadow-sm ring-1 ring-orange-100 transition hover:-translate-y-0.5"
+              >
+                Tamam
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
