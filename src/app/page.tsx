@@ -288,25 +288,6 @@ export default function Home() {
     setRemainingQueue(questionPool.map((q) => q.id));
   };
 
-  const heroContent = {
-    create: {
-      title: "Testini Hazırla",
-      description:
-        "20 soruluk havuzdan 10 soru seç, dilersen kendi sorunla destekle. Cevaplarını işaretle, paylaşılabilir linki üret ve arkadaşlarına gönder.",
-      emoji: "✍️",
-      badge: "Oluşturma",
-    },
-    solve: {
-      title: "Arkadaşının Testini Çöz",
-      description:
-        "Sana gelen linki yapıştır, soruları sırayla yanıtla ve geri dönmeden tamamla. Sonucunu skor tablosunda hemen gör!",
-      emoji: "🧩",
-      badge: "Çözüm",
-    },
-  } as const;
-
-  const hero = heroContent[view];
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-amber-50 via-white to-orange-50 text-zinc-900">
       <header className="sticky top-0 z-20 border-b border-orange-100 bg-white/80 backdrop-blur">
@@ -338,38 +319,34 @@ export default function Home() {
       </header>
 
       <main className="mx-auto flex max-w-6xl flex-col gap-8 px-6 py-10">
-        <section className="grid gap-6 rounded-3xl bg-white p-8 shadow-xl shadow-orange-100/70 lg:grid-cols-2">
-          <div className="space-y-3">
-            <div className="inline-flex items-center gap-2 rounded-full bg-orange-50 px-3 py-1 text-sm font-semibold text-orange-700">
-              <span>{hero.emoji}</span>
-              <span>{hero.badge}</span>
-            </div>
-            <h1 className="text-3xl font-semibold text-zinc-900">{hero.title}</h1>
-            <p className="text-lg text-zinc-600">{hero.description}</p>
-            <div className="grid gap-4 sm:grid-cols-2">
+        <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl bg-white/60 px-4 py-3 shadow-sm shadow-orange-100">
+          <div className="inline-flex items-center gap-2">
+            <span className="text-sm font-semibold text-orange-700">Başlangıç modu:</span>
+            <div className="inline-flex rounded-full border border-orange-100 bg-white p-1 shadow-inner">
               <button
                 onClick={() => setView("create")}
-                className="flex items-center justify-between rounded-2xl border border-orange-100 bg-orange-50 p-5 text-left transition hover:-translate-y-1 hover:border-orange-200 hover:bg-orange-100"
+                className={`rounded-full px-4 py-2 text-xs font-semibold transition ${
+                  view === "create"
+                    ? "bg-gradient-to-r from-orange-500 to-amber-500 text-white shadow-sm shadow-orange-200"
+                    : "text-orange-700 hover:bg-orange-50"
+                }`}
               >
-                <div>
-                  <p className="text-sm font-semibold text-orange-600">Kendi testini hazırla</p>
-                  <p className="text-base text-zinc-700">20 soruluk havuzdan 10 soru seç, cevabını işaretle, paylaşılabilir linkini al.</p>
-                </div>
-                <span className="text-3xl">✍️</span>
+                Test hazırla
               </button>
               <button
                 onClick={() => setView("solve")}
-                className="flex items-center justify-between rounded-2xl border border-zinc-200 bg-white p-5 text-left transition hover:-translate-y-1 hover:border-orange-200"
+                className={`rounded-full px-4 py-2 text-xs font-semibold transition ${
+                  view === "solve"
+                    ? "bg-gradient-to-r from-orange-500 to-amber-500 text-white shadow-sm shadow-orange-200"
+                    : "text-orange-700 hover:bg-orange-50"
+                }`}
               >
-                <div>
-                  <p className="text-sm font-semibold text-zinc-800">Arkadaşının testini çöz</p>
-                  <p className="text-base text-zinc-700">Linki kutucuğa yapıştır, soruları tek tek yanıtla, skor tablosunda yerini al.</p>
-                </div>
-                <span className="text-3xl">🧩</span>
+                Test çöz
               </button>
             </div>
           </div>
-        </section>
+          <p className="text-xs text-zinc-600">Kutucuk olmadan hızlı seçim yap: Test hazırla veya gelen linkle çöz.</p>
+        </div>
 
         {view === "create" && (
           <section className="grid gap-6 rounded-3xl bg-white p-8 shadow-xl shadow-orange-100/70 lg:grid-cols-3">
