@@ -135,7 +135,7 @@ const sampleScoreboard = [
 const MAX_SELECTION = 10;
 
 export default function Home() {
-  const [view, setView] = useState<"home" | "create" | "solve">("home");
+  const [view, setView] = useState<"create" | "solve">("create");
   const [selectedQuestions, setSelectedQuestions] = useState<string[]>([]);
   const [customQuestion, setCustomQuestion] = useState("");
   const [customOptions, setCustomOptions] = useState("A\nB\nC\nD");
@@ -272,6 +272,7 @@ export default function Home() {
   const answerForQuestion = (id: string, answersMap = friendAnswers) => answersMap[id];
 
   const resetStates = () => {
+    setView("create");
     setSelectedQuestions([]);
     setCreatorAnswers({});
     setGeneratedLink(null);
@@ -286,6 +287,25 @@ export default function Home() {
     setScoreboard(sampleScoreboard);
     setRemainingQueue(questionPool.map((q) => q.id));
   };
+
+  const heroContent = {
+    create: {
+      title: "Testini Hazırla",
+      description:
+        "20 soruluk havuzdan 10 soru seç, dilersen kendi sorunla destekle. Cevaplarını işaretle, paylaşılabilir linki üret ve arkadaşlarına gönder.",
+      emoji: "✍️",
+      badge: "Oluşturma",
+    },
+    solve: {
+      title: "Arkadaşının Testini Çöz",
+      description:
+        "Sana gelen linki yapıştır, soruları sırayla yanıtla ve geri dönmeden tamamla. Sonucunu skor tablosunda hemen gör!",
+      emoji: "🧩",
+      badge: "Çözüm",
+    },
+  } as const;
+
+  const hero = heroContent[view];
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-amber-50 via-white to-orange-50 text-zinc-900">
@@ -302,10 +322,10 @@ export default function Home() {
           </div>
           <div className="flex items-center gap-3">
             <button
-              onClick={() => setView("home")}
+              onClick={() => setView("create")}
               className="rounded-full bg-white px-4 py-2 text-sm font-medium text-orange-700 shadow-sm ring-1 ring-orange-100 transition hover:-translate-y-0.5 hover:shadow-md"
             >
-              Ana sayfa
+              Test hazırla
             </button>
             <button
               onClick={resetStates}
@@ -318,13 +338,14 @@ export default function Home() {
       </header>
 
       <main className="mx-auto flex max-w-6xl flex-col gap-8 px-6 py-10">
-        <section className="grid gap-6 rounded-3xl bg-white p-8 shadow-xl shadow-orange-100/70 lg:grid-cols-3">
-          <div className="space-y-3 lg:col-span-2">
-            <h1 className="text-3xl font-semibold text-zinc-900">Arkadaşlık Testi Ana Sayfası</h1>
-            <p className="text-lg text-zinc-600">
-              Kendi sorunla arkadaşlarını sınayabilir ya da sana gönderilen linkle arkadaşının testini çözebilirsin.
-              Sorular arasında geri dönüş yok; her adımda kararını ver ve ilerle!
-            </p>
+        <section className="grid gap-6 rounded-3xl bg-white p-8 shadow-xl shadow-orange-100/70 lg:grid-cols-2">
+          <div className="space-y-3">
+            <div className="inline-flex items-center gap-2 rounded-full bg-orange-50 px-3 py-1 text-sm font-semibold text-orange-700">
+              <span>{hero.emoji}</span>
+              <span>{hero.badge}</span>
+            </div>
+            <h1 className="text-3xl font-semibold text-zinc-900">{hero.title}</h1>
+            <p className="text-lg text-zinc-600">{hero.description}</p>
             <div className="grid gap-4 sm:grid-cols-2">
               <button
                 onClick={() => setView("create")}
@@ -347,16 +368,6 @@ export default function Home() {
                 <span className="text-3xl">🧩</span>
               </button>
             </div>
-          </div>
-          <div className="rounded-2xl border border-orange-100 bg-orange-50 p-6 shadow-inner shadow-orange-100">
-            <p className="text-sm font-semibold text-orange-700">Süreç Özeti</p>
-            <ul className="mt-3 space-y-2 text-sm text-orange-800">
-              <li>• Ana sayfada ister test hazırla ister test çöz adımını seç.</li>
-              <li>• Test hazırlarken 20 soruluk havuzdan 10 soru işaretle veya kendi sorun.</li>
-              <li>• Sorularını cevapladıktan sonra üretilen linki arkadaşlarına gönder.</li>
-              <li>• Arkadaşların linke tıkladığında soruları geriye dönemeden çözer.</li>
-              <li>• Tamamlayınca skor tablosunda tüm arkadaşların sonuçları görünür.</li>
-            </ul>
           </div>
         </section>
 
@@ -618,50 +629,6 @@ export default function Home() {
           </section>
         )}
 
-        {view === "home" && (
-          <section className="grid gap-6 rounded-3xl bg-white p-8 shadow-xl shadow-orange-100/70 lg:grid-cols-2">
-            <div className="rounded-2xl border border-orange-100 bg-gradient-to-br from-orange-50 to-amber-50 p-6 shadow-inner">
-              <p className="text-sm font-semibold text-orange-700">Nasıl çalışır?</p>
-              <ol className="mt-3 space-y-3 text-sm text-zinc-700">
-                <li>1. Ana sayfada testini oluşturmayı veya arkadaşının testini çözmeyi seç.</li>
-                <li>2. Test oluştururken 20 soruluk havuzdan 10 soru belirle, kendi sorunları ekleyebilirsin.</li>
-                <li>3. Cevaplarını kaydet, link üret ve arkadaşlarına gönder.</li>
-                <li>4. Arkadaşların linke tıklayıp soruları geriye dönemeden yanıtlar.</li>
-                <li>5. Test bitince herkesin skorları skor tablosunda listelenir.</li>
-              </ol>
-            </div>
-            <div className="space-y-4">
-              <div className="rounded-2xl border border-zinc-200 bg-zinc-50 p-4">
-                <p className="text-sm font-semibold text-zinc-800">Arkadaşının testini çöz</p>
-                <div className="mt-2 flex flex-col gap-3 sm:flex-row">
-                  <input
-                    value={solveLink}
-                    onChange={(e) => setSolveLink(e.target.value)}
-                    placeholder="Linki buraya yapıştır"
-                    className="w-full rounded-xl border border-zinc-200 bg-white px-3 py-2 text-sm focus:border-orange-400 focus:outline-none"
-                  />
-                  <button
-                    onClick={() => setView("solve")}
-                    className="rounded-xl bg-orange-500 px-4 py-2 text-sm font-semibold text-white shadow-sm shadow-orange-200 transition hover:-translate-y-0.5"
-                  >
-                    Teste git
-                  </button>
-                </div>
-                <p className="mt-2 text-xs text-zinc-600">Arkadaşının gönderdiği linki buraya yapıştırman yeterli.</p>
-              </div>
-              <div className="rounded-2xl border border-zinc-200 bg-white p-4 shadow-sm">
-                <p className="text-sm font-semibold text-zinc-800">Kendi testini oluştur</p>
-                <p className="mt-1 text-sm text-zinc-600">10 soruluk test için 20 soruluk havuz seni bekliyor. Hatta kendi sorunu da ekleyebilirsin.</p>
-                <button
-                  onClick={() => setView("create")}
-                  className="mt-3 w-full rounded-xl bg-orange-500 px-4 py-2 text-sm font-semibold text-white shadow-sm shadow-orange-200 transition hover:-translate-y-0.5"
-                >
-                  Test hazırlamaya başla
-                </button>
-              </div>
-            </div>
-          </section>
-        )}
       </main>
 
       {showShareModal && generatedLink && (
