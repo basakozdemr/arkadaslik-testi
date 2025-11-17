@@ -287,6 +287,32 @@ export default function Home() {
     setRemainingQueue(questionPool.map((q) => q.id));
   };
 
+  const heroContent = {
+    home: {
+      title: "Arkadaşlık Testi Ana Sayfası",
+      description:
+        "Kendi sorunla arkadaşlarını sınayabilir ya da sana gönderilen linkle arkadaşının testini çözebilirsin. Sorular arasında geri dönüş yok; her adımda kararını ver ve ilerle!",
+      emoji: "🏠",
+      badge: "Genel bakış",
+    },
+    create: {
+      title: "Testini Hazırla",
+      description:
+        "20 soruluk havuzdan 10 soru seç, dilersen kendi sorunla destekle. Cevaplarını işaretle, paylaşılabilir linki üret ve arkadaşlarına gönder.",
+      emoji: "✍️",
+      badge: "Oluşturma",
+    },
+    solve: {
+      title: "Arkadaşının Testini Çöz",
+      description:
+        "Sana gelen linki yapıştır, soruları sırayla yanıtla ve geri dönmeden tamamla. Sonucunu skor tablosunda hemen gör!",
+      emoji: "🧩",
+      badge: "Çözüm",
+    },
+  } as const;
+
+  const hero = heroContent[view];
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-amber-50 via-white to-orange-50 text-zinc-900">
       <header className="sticky top-0 z-20 border-b border-orange-100 bg-white/80 backdrop-blur">
@@ -320,11 +346,12 @@ export default function Home() {
       <main className="mx-auto flex max-w-6xl flex-col gap-8 px-6 py-10">
         <section className="grid gap-6 rounded-3xl bg-white p-8 shadow-xl shadow-orange-100/70 lg:grid-cols-3">
           <div className="space-y-3 lg:col-span-2">
-            <h1 className="text-3xl font-semibold text-zinc-900">Arkadaşlık Testi Ana Sayfası</h1>
-            <p className="text-lg text-zinc-600">
-              Kendi sorunla arkadaşlarını sınayabilir ya da sana gönderilen linkle arkadaşının testini çözebilirsin.
-              Sorular arasında geri dönüş yok; her adımda kararını ver ve ilerle!
-            </p>
+            <div className="inline-flex items-center gap-2 rounded-full bg-orange-50 px-3 py-1 text-sm font-semibold text-orange-700">
+              <span>{hero.emoji}</span>
+              <span>{hero.badge}</span>
+            </div>
+            <h1 className="text-3xl font-semibold text-zinc-900">{hero.title}</h1>
+            <p className="text-lg text-zinc-600">{hero.description}</p>
             <div className="grid gap-4 sm:grid-cols-2">
               <button
                 onClick={() => setView("create")}
