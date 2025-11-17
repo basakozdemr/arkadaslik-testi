@@ -327,7 +327,7 @@ export default function Home() {
             <div className="space-y-4 lg:col-span-2">
               <div className="flex items-start justify-between gap-4">
                 <div>
-                  <h2 className="text-2xl font-semibold">Sorularını sırayla seç (20&apos;lik havuzdan 10&apos;u)</h2>
+                  <h2 className="text-2xl font-semibold">🧠 Sorularını sırayla seç (20&apos;lik havuzdan 10&apos;u)</h2>
                   <p className="text-sm text-zinc-600">
                     Seçilen: {selectedQuestions.length}/{MAX_SELECTION} · Havuzda kalan soru: {remainingQueue.length}
                   </p>
@@ -379,16 +379,16 @@ export default function Home() {
                         <div className="flex flex-wrap items-center gap-2">
                           <button
                             onClick={() => setShowCustomEditor((prev) => !prev)}
-                            className="rounded-full bg-orange-100 px-4 py-2 text-sm font-semibold text-orange-700 shadow-sm ring-1 ring-orange-200 transition hover:-translate-y-0.5 hover:shadow"
+                            className="inline-flex items-center gap-2 rounded-full bg-white px-4 py-2 text-sm font-semibold text-orange-700 shadow-sm ring-1 ring-orange-200 transition hover:-translate-y-0.5 hover:bg-orange-50 hover:shadow"
                           >
-                            Kendi sorumu yazmak istiyorum
+                            ✏️ Kendi sorumu yazmak istiyorum
                           </button>
                           <button
                             onClick={handleSkipCurrent}
                             disabled={skipDisabled}
-                            className="rounded-full bg-white px-4 py-2 text-sm font-semibold text-orange-700 shadow-sm ring-1 ring-orange-100 transition hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-60"
+                            className="inline-flex items-center gap-2 rounded-full bg-white px-4 py-2 text-sm font-semibold text-orange-700 shadow-sm ring-1 ring-orange-100 transition hover:-translate-y-0.5 hover:bg-orange-50 disabled:cursor-not-allowed disabled:opacity-60"
                           >
-                            Soruyu atla
+                            ⏭️ Soruyu atla
                           </button>
                         </div>
                       </div>
@@ -405,12 +405,14 @@ export default function Home() {
                           </div>
                           <div className="mt-3 space-y-2">
                             <label className="text-xs font-semibold text-zinc-700">Soru metni</label>
-                            <input
-                              value={customQuestion}
-                              onChange={(e) => setCustomQuestion(e.target.value)}
-                              placeholder="Arkadaşlarına soracağın soruyu yaz"
-                              className="w-full rounded-xl border border-orange-200 bg-white px-3 py-3 text-sm font-medium text-zinc-800 shadow-sm focus:border-orange-400 focus:outline-none"
-                            />
+                            <div className="rounded-2xl border border-orange-200 bg-white p-3 shadow-sm">
+                              <input
+                                value={customQuestion}
+                                onChange={(e) => setCustomQuestion(e.target.value)}
+                                placeholder="Arkadaşlarına soracağın soruyu buraya yaz"
+                                className="w-full bg-transparent text-sm font-medium text-zinc-800 outline-none"
+                              />
+                            </div>
                           </div>
                           <div className="mt-4 space-y-2">
                             <p className="text-xs font-semibold text-zinc-700">Seçenekler ve doğru cevap</p>
@@ -450,9 +452,9 @@ export default function Home() {
                           </div>
                           <button
                             onClick={handleAddCustomQuestion}
-                            className="mt-4 w-full rounded-xl bg-orange-500 px-4 py-3 text-sm font-semibold text-white shadow-sm shadow-orange-200 transition hover:-translate-y-0.5 hover:shadow-md"
+                            className="mt-4 w-full rounded-xl bg-gradient-to-r from-orange-500 to-amber-500 px-4 py-3 text-sm font-semibold text-white shadow-sm shadow-orange-200 transition hover:-translate-y-0.5 hover:shadow-md"
                           >
-                            Sorum hazır
+                            ✅ Sorum hazır
                           </button>
                         </div>
                       )}
@@ -471,7 +473,7 @@ export default function Home() {
               {selectionComplete ? (
                 <>
                   <div className="rounded-2xl border border-orange-100 bg-orange-50/70 p-4">
-                    <p className="font-semibold text-orange-700">Seçtiklerin ve cevapların</p>
+                    <p className="font-semibold text-orange-700">📋 Seçtiklerin ve cevapların</p>
                     <p className="text-xs text-orange-600">Cevapları son kez gözden geçir, istersen değiştirebilirsin.</p>
                     <div className="mt-3 max-h-[360px] space-y-3 overflow-y-auto pr-2">
                       {selectedData.map((question) => (
@@ -503,7 +505,7 @@ export default function Home() {
                   </div>
 
                   <div className="rounded-2xl border border-zinc-200 bg-white p-4 shadow-sm">
-                    <p className="font-semibold text-zinc-900">Testimi oluştur</p>
+                    <p className="font-semibold text-zinc-900">🚀 Testimi oluştur</p>
                     <p className="text-sm text-zinc-600">İşaretlemelerin hazır, linki üretip arkadaşlarınla paylaşabilirsin.</p>
                     <button
                       onClick={handleGenerateLink}
@@ -563,7 +565,7 @@ export default function Home() {
                 <div className="rounded-2xl border border-orange-100 bg-white p-4 shadow-sm">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-sm font-semibold text-orange-700">Arkadaşının hazırladığı test</p>
+                      <p className="text-sm font-semibold text-orange-700">👀 Arkadaşının hazırladığı test</p>
                       <p className="text-xs text-zinc-500">Sorularda geri dönüş yok. Cevapla ve ilerle!</p>
                     </div>
                     <div className="rounded-full bg-orange-100 px-3 py-1 text-xs font-semibold text-orange-700">
@@ -601,7 +603,7 @@ export default function Home() {
 
             <div className="rounded-2xl border border-zinc-200 bg-white p-4 shadow-sm">
               <div className="flex items-center justify-between">
-                <p className="font-semibold text-zinc-900">Arkadaşlarının skor tablosu</p>
+                <p className="font-semibold text-zinc-900">🏆 Arkadaşlarının skor tablosu</p>
                 <span className="rounded-full bg-orange-100 px-3 py-1 text-xs font-semibold text-orange-700">Canlı</span>
               </div>
               <p className="mt-1 text-xs text-zinc-600">Test bitince yeni skor en üstte görünür.</p>
@@ -630,12 +632,12 @@ export default function Home() {
         {view === "home" && (
           <section className="grid gap-6 rounded-3xl bg-white p-8 shadow-xl shadow-orange-100/70 lg:grid-cols-2">
             <div className="rounded-2xl border border-orange-100 bg-gradient-to-br from-orange-50 to-amber-50 p-6 shadow-inner">
-              <p className="text-sm font-semibold text-orange-700">Nasıl çalışır?</p>
+              <p className="text-sm font-semibold text-orange-700">Nasıl çalışır? 🤝</p>
               <ol className="mt-3 space-y-3 text-sm text-zinc-700">
-                <li>1. &ldquo;Kendi testini oluştur&rdquo; veya &ldquo;Arkadaşının testini çöz&rdquo; adımını seç.</li>
-                <li>2. Test oluştururken 20 soruluk havuzdan sorular sırayla gelir; cevapla, atla veya kendi sorunu yaz.</li>
-                <li>3. 10 soruyu işaretleyince seçtiklerin otomatik listelenir; son kontrole bakıp &ldquo;Testimi oluştur&rdquo;a tıkla.</li>
-                <li>4. Linki paylaş; arkadaşların soruları geriye dönemeden çözer ve skor tablosunda sonuçlar görünür.</li>
+                <li>1️⃣ &ldquo;Kendi testini oluştur&rdquo; veya &ldquo;Arkadaşının testini çöz&rdquo; adımını seç.</li>
+                <li>2️⃣ Test oluştururken 20 soruluk havuzdan sorular sırayla gelir; cevapla, atla veya ✏️ kendi sorunu yaz.</li>
+                <li>3️⃣ 10 soruyu işaretleyince seçtiklerin otomatik listelenir; son kontrole bakıp &ldquo;Testimi oluştur&rdquo;a tıkla.</li>
+                <li>4️⃣ Linki paylaş; arkadaşların soruları geriye dönemeden çözer ve 🏅 skor tablosunda sonuçlar görünür.</li>
               </ol>
             </div>
             <div className="space-y-4">
