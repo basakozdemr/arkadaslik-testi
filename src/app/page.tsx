@@ -512,11 +512,10 @@ export default function Home() {
                             <button
                               key={option}
                               onClick={() => setCreatorAnswers((prev) => ({ ...prev, [question.id]: option }))}
-                              className={`rounded-lg border px-2 py-2 text-left transition ${
-                                creatorAnswers[question.id] === option
+                              className={`rounded-lg border px-2 py-2 text-left transition ${creatorAnswers[question.id] === option
                                   ? "border-orange-400 bg-orange-50"
                                   : "border-zinc-200 hover:border-orange-200"
-                              }`}
+                                }`}
                             >
                               {option}
                             </button>
