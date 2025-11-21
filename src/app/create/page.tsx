@@ -174,10 +174,35 @@ export default function CreatePage() {
 
     const handleCreateTest = async () => {
         if (selectedQuestions.length < MAX_SELECTION) return;
+
         const code = Math.random().toString(36).slice(2, 8).toUpperCase();
+
+        const questionsPayload = selectedQuestions.map((item) => {
+            const info = questionLookup.get(item.questionId);
+            return {
+                id: item.questionId,
+                text: info?.text ?? item.text,
+                options: info?.options ?? [],
+                answer: item.answer,
+            };
+        });
+
+        const { error } = await supabase.from("tests").insert({
+            id: code,
+            questions: questionsPayload,
+        });
+
+        if (error) {
+            alert("Test oluşturulurken bir hata oluştu.");
+            console.error(error);
+            return;
+        }
+
         setTestId(code);
+
         const origin = typeof window !== "undefined" ? window.location.origin : "";
         const link = origin ? `${origin}/test/${code}` : `/test/${code}`;
+
         setShareLink(link);
         setShowSharePanel(true);
         setCopyStatus("idle");
@@ -228,9 +253,9 @@ export default function CreatePage() {
                                     </div>
 
                                     <div className="grid gap-3 sm:grid-cols-2">
-                                        {currentQuestion.options.map((option) => (
+                                        {currentQuestion.options.map((option, index) => (
                                             <button
-                                                key={option}
+                                                key={`${option}-${index}`}
                                                 type="button"
                                                 onClick={() => handleSelect(option)}
                                                 disabled={isComplete}
@@ -350,6 +375,7 @@ export default function CreatePage() {
                                 {selectedQuestions.length} / {MAX_SELECTION}
                             </span>
                         </div>
+
                         {selectedQuestions.length === 0 ? (
                             <p className="text-sm text-rose-700">
                                 Seçtiklerin burada listelenecek. Her bir seçenek tıklaması hem soruyu ekler hem de
@@ -362,10 +388,10 @@ export default function CreatePage() {
                                     const isCustom = item.questionId.startsWith("custom-");
                                     return (
                                         <li
-                                            key={item.questionId + item.answer + index}
+                                            key={`${item.questionId}-${index}`}
                                             className="rounded-xl border border-rose-100 bg-rose-50/80 px-3 py-2"
                                         >
-                                            <div className="flex items-center justify-between">
+                                            <div className="flex items-center justify_between">
                                                 <p className="text-xs font-semibold uppercase tracking-[0.12em] text-rose-500">
                                                     Soru {index + 1}
                                                 </p>
@@ -394,7 +420,9 @@ export default function CreatePage() {
                                 disabled={selectedQuestions.length < MAX_SELECTION}
                                 className="w-full rounded-full bg-rose-500 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-rose-600 disabled:cursor-not-allowed disabled:opacity-60"
                             >
-                                {selectedQuestions.length < MAX_SELECTION ? "Önce 10 soruyu tamamla" : "Testi oluştur"}
+                                {selectedQuestions.length < MAX_SELECTION
+                                    ? "Önce 10 soruyu tamamla"
+                                    : "Testi oluştur"}
                             </button>
                         </div>
                     </aside>
