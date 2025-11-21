@@ -24,3 +24,25 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+@keyframes pop-open {
+  0% {
+    transform: scale(0.75);
+    opacity: 0;
+  }
+
+  60% {
+    transform: scale(1.08);
+    opacity: 1;
+  }
+
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.popup-pop {
+  animation: pop-open 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+  transform-origin: center;
+}
