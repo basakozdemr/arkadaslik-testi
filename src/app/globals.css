@@ -42,6 +42,56 @@ body {
   }
 }
 
+/* Tailwind'in base/components/utilities kısımları zaten varsa kalsın */
+
+/* === Arkadaşlık Testi Tema Sınıfları === */
+
+/* Sayfa arka planı */
+.app-bg {
+  @apply bg-[#FFF5F8];
+}
+
+/* Ana yazı rengi */
+.app-text-main {
+  @apply text-[#220818];
+}
+
+/* Kart yüzeyi */
+.app-card {
+  @apply bg-white border border-[#FFE4EC];
+}
+
+/* Kart içi yumuşak zemin */
+.app-card-soft {
+  @apply bg-[#FFF0F5] border border-[#FFE4EC];
+}
+
+/* Sınır / çerçeve */
+.app-border-soft {
+  @apply border border-[#FFE4EC];
+}
+
+/* Zayıf (açık) metin */
+.app-text-muted {
+  @apply text-[#A35C7D];
+}
+
+/* Birincil buton */
+.app-btn-primary {
+  @apply bg-[#F9487B] text-white font-semibold rounded-full px-4 py-2 shadow-sm hover:bg-[#E63E70] transition disabled:opacity-60 disabled:cursor-not-allowed;
+}
+
+/* İkincil buton */
+.app-btn-secondary {
+  @apply border border-[#FFE4EC] bg-white text-[#BF2755] font-semibold rounded-full px-4 py-2 hover:border-[#FF9EBB] hover:text-[#E03567] transition;
+}
+
+/* Küçük rozet */
+.app-pill {
+  @apply rounded-full bg-[#FFE4EC] text-[#BF2755] text-xs font-semibold px-3 py-1;
+}
+
+
 .popup-pop {
   animation: pop-open 0.22s cubic-bezier(0.16, 1, 0.3, 1);
   transform-origin: center;

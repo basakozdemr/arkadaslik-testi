@@ -2,12 +2,13 @@
 
 import { useMemo, useState } from "react";
 import { supabase } from "../../../lib/supabaseClient";
+import { addStoredTest } from "../../../lib/friendTestStorage";
 
 type Question = {
     id: string;
     text: string;
     options: string[];
-    answer?: string; // seed answers only for demo; creator sets answers via selection
+    answer?: string;
 };
 
 type SelectedQuestion = {
@@ -17,80 +18,130 @@ type SelectedQuestion = {
 };
 
 const MAX_SELECTION = 10;
-const DEFAULT_CUSTOM_OPTIONS = ["", "", "", ""];
+const MIN_CUSTOM_OPTIONS = 2;
 
 const questionPool: Question[] = [
     {
         id: "q1",
-        text: "Hafta sonu planın nedir?",
-        options: ["Evde film gecesi", "Doğa yürüyüşü", "Arkadaşlarla brunch", "Şehirden kaçış"],
-        answer: "Doğa yürüyüşü",
+        text: "en sık hangisini yapar?",
+        options: ["Evde kalır", "Dışarı çıkar", "Aileyle vakit geçirir"],
     },
     {
         id: "q2",
-        text: "Kahveni nasıl içersin?",
-        options: ["Sade", "Sütlü", "Soğuk kahve", "Filtre kahve"],
-        answer: "Sade",
+        text: "bir kafede genellikle ne sipariş eder?",
+        options: ["Kahve", "Çay", "Soğuk içecek", "Tatlı"],
     },
     {
         id: "q3",
-        text: "En çok hangi müzik türünü dinlersin?",
-        options: ["Indie", "Pop", "Lo-fi", "Rock"],
-        answer: "Indie",
+        text: "stresliyken en çok ne yapmayı tercih eder?",
+        options: [
+            "Yürüyüşe çıkar",
+            "Müzik dinler",
+            "Dizi/film izler",
+            "Uyur",
+            "Arkadaşlarıyla konuşur",
+        ],
     },
     {
         id: "q4",
-        text: "Tatilde önceliğin?",
-        options: ["Deniz-kum-güneş", "Yeni şehir keşfi", "Yemek turu", "Doğa kampı"],
-        answer: "Yeni şehir keşfi",
+        text: "mesajlaşırken hangi tarzı daha çok kullanır?",
+        options: [
+            "Emoji dolu mesajlar",
+            "Kısa ve net mesajlar",
+            "Uzun paragraflar",
+            "Sadece önemli şeyleri yazar",
+            "Sesli mesaj atar",
+        ],
     },
     {
         id: "q5",
-        text: "Akşam yemeği seçiminde hangisi seni anlatır?",
-        options: ["Evde şef modu", "Yeni restoran denemek", "Sokak lezzetleri", "Hızlı atıştırmalık"],
-        answer: "Yeni restoran denemek",
+        text: "karakter olarak hangisine daha yakındır?",
+        options: ["Planlı", "Spontane", "Kararsız", "Duruma göre değişir"],
     },
     {
         id: "q6",
-        text: "Günün hangi zamanı en verimli hissedersin?",
-        options: ["Sabah erken", "Öğlen", "Akşamüstü", "Gece geç"],
-        answer: "Sabah erken",
+        text: "günün hangi saatinde daha enerjik olur?",
+        options: ["Sabah erken", "Öğlen", "Gece geç"],
     },
     {
         id: "q7",
-        text: "Hangi aktivite seni rahatlatarak mutlu eder?",
-        options: ["Meditasyon", "Kitap okumak", "Uzun yürüyüş", "Müzik dinlemek"],
-        answer: "Kitap okumak",
+        text: "bir plan iptal olduğunda en çok nasıl hisseder?",
+        options: ["Rahatlar", "Üzülür", "Umursamaz", "Hemen yeni plan yapar"],
     },
     {
         id: "q8",
-        text: "Hangi dizi türünü açmayı tercih edersin?",
-        options: ["Komedi", "Suç/gizem", "Drama", "Bilim kurgu"],
-        answer: "Suç/gizem",
+        text: "evcil hayvan olarak hangisine daha yakındır?",
+        options: ["Kedi", "Köpek"],
     },
     {
         id: "q9",
-        text: "Evcil hayvan seçiminde hangisini öne alırsın?",
-        options: ["Kedi", "Köpek", "Kuş", "Balık"],
-        answer: "Kedi",
+        text: "önemli bir şey anlatırken hangi iletişim şeklini kullanır?",
+        options: ["Sesli mesaj", "Uzun yazılı mesaj", "Telefon araması", "Yüz yüze konuşma"],
     },
     {
         id: "q10",
-        text: "Yeni biriyle tanışırken ilk dikkat ettiğin şey?",
-        options: ["Gülümseme", "Konuşma tarzı", "Ortak ilgi alanları", "Vücut dili"],
-        answer: "Konuşma tarzı",
+        text: "birlikte zaman geçirirken en çok hangisini tercih eder?",
+        options: ["Sakin kafede oturmak", "Kalabalık bir yere gitmek", "Evde buluşmak", "Dışarıda yürüyüş"],
     },
     {
         id: "q11",
-        text: "Sporda motivasyon kaynağın?",
-        options: ["Yüksek tempolu müzik", "Partnerle çalışmak", "Hedef listesi", "Yeni ekipman"],
-        answer: "Hedef listesi",
+        text: "kararsız kaldığında genellikle ne yapar?",
+        options: ["Yakın arkadaşına sorar", "Kendi kendine düşünür", "Bekler", "İnternetten araştırır"],
     },
     {
         id: "q12",
-        text: "Telefonunda en çok kullandığın özellik?",
-        options: ["Notlar", "Müzik/podcast", "Haritalar", "Takvim"],
-        answer: "Notlar",
+        text: "uyku düzeni nasıldır?",
+        options: ["Erken uyur", "Geç uyur", "Düzensiz uyur", "Fırsat buldukça uyur"],
+    },
+    {
+        id: "q13",
+        text: "internette en çok hangi tür içerikleri izler?",
+        options: ["Vlog", "Eğitici videolar", "Komik videolar", "Dizi/film sahneleri"],
+    },
+    {
+        id: "q14",
+        text: "hediye seçerken neye önem verir?",
+        options: ["Anlamlı olmasına", "İşe yaramasına", "Eğlenceli olmasına"],
+    },
+    {
+        id: "q15",
+        text: "birlikte geçirilen zamanlardan hangisini özel bulur?",
+        options: [
+            "Uzun sohbetleri",
+            "Birlikte bir şeyler izlemeyi",
+            "Yeni yer keşfetmeyi",
+            "Kısa ama samimi buluşmaları",
+        ],
+    },
+    {
+        id: "q16",
+        text: "sosyal olarak hangisine yakındır?",
+        options: ["İçe dönük", "Dışa dönük", "İkisi arası", "Duruma göre değişir"],
+    },
+    {
+        id: "q17",
+        text: "önemli bir gün yaklaştığında nasıl davranır?",
+        options: [
+            "Her şeyi planlar",
+            "Son ana bırakır",
+            "Başkası karar versin ister",
+            "O an ne isterse onu yapar",
+        ],
+    },
+    {
+        id: "q18",
+        text: "en çok hangi emojiyi kullanır?",
+        options: ["😂", "🥲", "😍", "🤔"],
+    },
+    {
+        id: "q19",
+        text: "sabah uyandığında ilk ne yapar?",
+        options: ["Telefona bakar", "Mesajlara cevap verir", "Müzik açar", "Bir süre yatakta kalır"],
+    },
+    {
+        id: "q20",
+        text: "bir sorunla karşılaştığında ilk tepkisi ne olur?",
+        options: ["Panikler", "Sakinleşmeye çalışır", "Birine danışır", "Ertelemeye çalışır", "Şakaya vurur"],
     },
 ];
 
@@ -99,7 +150,7 @@ export default function CreatePage() {
     const [selectedQuestions, setSelectedQuestions] = useState<SelectedQuestion[]>([]);
     const [showCustomEditor, setShowCustomEditor] = useState(false);
     const [customQuestionText, setCustomQuestionText] = useState("");
-    const [customOptions, setCustomOptions] = useState<string[]>([...DEFAULT_CUSTOM_OPTIONS]);
+    const [customOptions, setCustomOptions] = useState<string[]>(Array(MIN_CUSTOM_OPTIONS).fill(""));
     const [customQuestions, setCustomQuestions] = useState<
         Array<{
             id: string;
@@ -107,10 +158,21 @@ export default function CreatePage() {
             options: string[];
         }>
     >([]);
-    const [testId, setTestId] = useState<string | null>(null);
     const [shareLink, setShareLink] = useState<string | null>(null);
     const [showSharePanel, setShowSharePanel] = useState(false);
     const [copyStatus, setCopyStatus] = useState<"idle" | "copied">("idle");
+
+    // isim + akış kontrolü
+    const [creatorName, setCreatorName] = useState("");
+    const [hasStarted, setHasStarted] = useState(false);
+
+    // testi kaydetme + hata
+    const [savingTest, setSavingTest] = useState(false);
+    const [saveError, setSaveError] = useState<string | null>(null);
+
+    // gözden geçirme paneli ve "Testi tamamla" popup'ı
+    const [showReviewPanel, setShowReviewPanel] = useState(false);
+    const [showConfirmPanel, setShowConfirmPanel] = useState(false);
 
     const currentQuestion = useMemo(() => remainingQueue[0], [remainingQueue]);
 
@@ -148,7 +210,18 @@ export default function CreatePage() {
     const handleCancelCustom = () => {
         setShowCustomEditor(false);
         setCustomQuestionText("");
-        setCustomOptions([...DEFAULT_CUSTOM_OPTIONS]);
+        setCustomOptions(Array(MIN_CUSTOM_OPTIONS).fill(""));
+    };
+
+    const handleAddCustomOption = () => {
+        setCustomOptions((prev) => [...prev, ""]);
+    };
+
+    const handleRemoveCustomOption = (index: number) => {
+        setCustomOptions((prev) => {
+            if (prev.length <= MIN_CUSTOM_OPTIONS) return prev;
+            return prev.filter((_, i) => i !== index);
+        });
     };
 
     const handleSaveCustom = () => {
@@ -157,23 +230,37 @@ export default function CreatePage() {
 
         const parsedOptions = customOptions.map((opt) => opt.trim()).filter(Boolean);
 
-        let computedOptions =
-            parsedOptions.length >= 2 ? parsedOptions.slice(0, 4) : [...DEFAULT_CUSTOM_OPTIONS];
-
-        while (computedOptions.length < 4) {
-            computedOptions.push(DEFAULT_CUSTOM_OPTIONS[computedOptions.length]);
+        if (parsedOptions.length < MIN_CUSTOM_OPTIONS) {
+            alert(`En az ${MIN_CUSTOM_OPTIONS} dolu seçenek eklemelisin.`);
+            return;
         }
 
         const newId = `custom-${customQuestions.length + 1}`;
-        const newQuestion: Question = { id: newId, text: questionText, options: computedOptions };
+        const newQuestion: Question = { id: newId, text: questionText, options: parsedOptions };
 
         setCustomQuestions((prev) => [...prev, newQuestion]);
-        setRemainingQueue((prev) => [newQuestion, ...prev]); // custom question comes next
+        setRemainingQueue((prev) => [newQuestion, ...prev]);
         handleCancelCustom();
+    };
+
+    const handleStart = () => {
+        if (!creatorName.trim()) {
+            setSaveError("Önce adını yazmalısın.");
+            return;
+        }
+        setSaveError(null);
+        setHasStarted(true);
     };
 
     const handleCreateTest = async () => {
         if (selectedQuestions.length < MAX_SELECTION) return;
+        if (!creatorName.trim()) {
+            setSaveError("Önce adını yazmalısın.");
+            return;
+        }
+
+        setSavingTest(true);
+        setSaveError(null);
 
         const code = Math.random().toString(36).slice(2, 8).toUpperCase();
 
@@ -189,16 +276,23 @@ export default function CreatePage() {
 
         const { error } = await supabase.from("tests").insert({
             id: code,
+            creator_name: creatorName.trim(),
             questions: questionsPayload,
         });
 
         if (error) {
-            alert("Test oluşturulurken bir hata oluştu.");
             console.error(error);
+            setSaveError("Test kaydedilirken bir hata oluştu. Lütfen tekrar dene.");
+            setSavingTest(false);
             return;
         }
 
-        setTestId(code);
+        // 👉 BU CİHAZ İÇİN LOCALSTORAGE'A DA KAYDET
+        addStoredTest({
+            id: code,
+            creatorName: creatorName.trim(),
+            createdAt: new Date().toISOString(),
+        });
 
         const origin = typeof window !== "undefined" ? window.location.origin : "";
         const link = origin ? `${origin}/test/${code}` : `/test/${code}`;
@@ -206,6 +300,7 @@ export default function CreatePage() {
         setShareLink(link);
         setShowSharePanel(true);
         setCopyStatus("idle");
+        setSavingTest(false);
     };
 
     const handleCopyLink = async () => {
@@ -220,160 +315,306 @@ export default function CreatePage() {
 
     return (
         <>
-            <div className="min-h-screen bg-rose-50 text-rose-950">
+            <div className="min-h-screen app-bg app-text-main">
                 <div className="mx-auto flex max-w-6xl flex-col gap-6 px-4 py-10 lg:flex-row">
-                    <div className="flex-1 space-y-6 rounded-3xl border border-rose-100 bg-white/80 p-8 shadow-sm backdrop-blur">
-                        <div className="flex flex-col gap-2">
-                            <p className="text-sm font-semibold uppercase tracking-[0.16em] text-rose-500">
-                                Seçilen soru: {selectedQuestions.length} / {MAX_SELECTION}
-                            </p>
-                            <h1 className="text-3xl font-bold text-rose-900">Arkadaşlık testini oluştur</h1>
-                            <p className="text-sm text-rose-700">
-                                20 soruluk havuzdan 10 soruluk test hazırlayacaksın. Her soruda kendi doğru cevabını
-                                işaretleyeceksin.
-                            </p>
-                        </div>
-
-                        <div className="rounded-2xl border border-rose-100 bg-rose-50/70 p-6 shadow-inner">
-                            {!currentQuestion && !showCustomEditor && (
-                                <div className="flex flex-col items-start gap-3">
-                                    <h2 className="text-xl font-semibold text-rose-900">Havuzdaki sorular bitti.</h2>
-                                    <p className="text-sm text-rose-700">
-                                        Örnek havuz şimdilik sınırlı. Yeni sorular ekleyene kadar seçtiklerinle
-                                        devam edebilirsin.
+                    <div className="flex-1 space-y-6 rounded-3xl border app-card bg-white/80 p-8 shadow-sm backdrop-blur">
+                        {!hasStarted ? (
+                            <div className="space-y-6">
+                                <div className="space-y-2">
+                                    <p className="text-sm font-semibold uppercase tracking-[0.16em] app-text-muted">
+                                        Arkadaşlık testi
+                                    </p>
+                                    <h1 className="text-3xl font-bold app-text-main">
+                                        Testini hazırlamaya başla
+                                    </h1>
+                                    <p className="text-sm app-text-muted">
+                                        Önce testin kime ait olduğunu seçelim. Sonra senin hakkında sorulardan
+                                        oluşan testi hazırlayacağız.
                                     </p>
                                 </div>
-                            )}
-
-                            {currentQuestion && !showCustomEditor && (
-                                <div className="space-y-5">
-                                    <div className="space-y-2">
-                                        <p className="text-sm font-semibold text-rose-500">Soru kuyruğu</p>
-                                        <h2 className="text-xl font-bold text-rose-900">{currentQuestion.text}</h2>
-                                    </div>
-
-                                    <div className="grid gap-3 sm:grid-cols-2">
-                                        {currentQuestion.options.map((option, index) => (
-                                            <button
-                                                key={`${option}-${index}`}
-                                                type="button"
-                                                onClick={() => handleSelect(option)}
-                                                disabled={isComplete}
-                                                className="group rounded-xl border border-rose-200 bg-white px-4 py-3 text-left font-semibold text-rose-900 transition hover:-translate-y-[1px] hover:border-rose-300 hover:shadow disabled:cursor-not-allowed disabled:opacity-50"
-                                            >
-                                                <span className="mt-1 block text-lg font-bold text-rose-900">{option}</span>
-                                            </button>
-                                        ))}
-                                    </div>
-
-                                    {isComplete && (
-                                        <p className="rounded-lg border border-rose-200 bg-white px-3 py-2 text-sm font-semibold text-rose-700">
-                                            Maksimum 10 soruyu seçtin. Sağdaki listede özetini görebilirsin.
-                                        </p>
+                                <div className="space-y-2">
+                                    <label className="text-xs font-semibold app-text-main">
+                                        Bu testi kim hazırlıyor? (Adın)
+                                    </label>
+                                    <input
+                                        value={creatorName}
+                                        onChange={(e) => setCreatorName(e.target.value)}
+                                        placeholder="Adını yaz"
+                                        className="w-full rounded-xl border app-card-soft px-3 py-2 text-sm app-text-main outline-none transition focus:ring-2"
+                                    />
+                                    <p className="text-[11px] app-text-muted">
+                                        Testi çözen arkadaşların, bu isme göre kimin testini çözdüklerini görecek.
+                                    </p>
+                                    {saveError && (
+                                        <p className="text-[11px] text-red-600 mt-1">{saveError}</p>
                                     )}
                                 </div>
-                            )}
-
-                            {showCustomEditor && (
-                                <div className="space-y-4 rounded-xl border border-rose-100 bg-white p-5">
-                                    <div>
-                                        <p className="text-sm font-semibold uppercase tracking-[0.14em] text-rose-500">
-                                            Kendi sorunu yaz
-                                        </p>
-                                        <p className="mt-1 text-sm text-rose-700">
-                                            Bu test için özel bir soru ve seçeneklerini yaz. Sonra kaydedip tıpkı diğer
-                                            sorular gibi cevabını işaretleyeceksin.
-                                        </p>
-                                    </div>
-                                    <div className="space-y-2">
-                                        <label className="text-sm font-semibold text-rose-900">Soru metni</label>
-                                        <textarea
-                                            value={customQuestionText}
-                                            onChange={(e) => setCustomQuestionText(e.target.value)}
-                                            placeholder="Arkadaşlığınızı en iyi anlatan soruyu yaz..."
-                                            className="w-full rounded-xl border border-rose-200 bg-rose-50/60 px-3 py-2 text-sm text-rose-900 outline-none transition focus:border-rose-300 focus:ring-2 focus:ring-rose-100"
-                                            rows={3}
-                                        />
-                                    </div>
-                                    <div className="space-y-2">
-                                        <label className="text-sm font-semibold text-rose-900">Seçenekler</label>
-                                        <div className="grid gap-3 sm:grid-cols-2">
-                                            {customOptions.map((opt, idx) => (
-                                                <input
-                                                    key={idx}
-                                                    value={opt}
-                                                    onChange={(e) =>
-                                                        setCustomOptions((prev) => {
-                                                            const next = [...prev];
-                                                            next[idx] = e.target.value;
-                                                            return next;
-                                                        })
-                                                    }
-                                                    placeholder={`Seçenek ${idx + 1}`}
-                                                    className="w-full rounded-xl border border-rose-200 bg-rose-50/60 px-3 py-2 text-sm text-rose-900 outline-none transition focus:border-rose-300 focus:ring-2 focus:ring-rose-100"
-                                                />
-                                            ))}
-                                        </div>
-                                        <p className="text-xs text-rose-700">Toplam 4 seçenek ekleyebilirsin.</p>
-                                    </div>
-                                    <div className="flex flex-wrap gap-3">
-                                        <button
-                                            type="button"
-                                            className="rounded-full border border-rose-200 bg-white px-4 py-2 text-sm font-semibold text-rose-700 transition hover:border-rose-300 hover:text-rose-800"
-                                            onClick={handleCancelCustom}
-                                        >
-                                            İptal
-                                        </button>
-                                        <button
-                                            type="button"
-                                            className="rounded-full border border-rose-500 bg-rose-500 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-rose-600"
-                                            onClick={handleSaveCustom}
-                                        >
-                                            Sorumu kaydet
-                                        </button>
-                                    </div>
+                                <div className="pt-2">
+                                    <button
+                                        type="button"
+                                        onClick={handleStart}
+                                        disabled={!creatorName.trim()}
+                                        className="w-full rounded-full app-btn-primary px-4 py-3 text-sm font-semibold text-white shadow-sm transition disabled:cursor-not-allowed disabled:opacity-60"
+                                    >
+                                        Başla
+                                    </button>
                                 </div>
-                            )}
-                        </div>
+                            </div>
+                        ) : (
+                            <>
+                                <div className="flex flex-col gap-2">
+                                    <p className="text-sm font-semibold uppercase tracking-[0.16em] app-text-muted">
+                                        Seçilen soru: {selectedQuestions.length} / {MAX_SELECTION}
+                                    </p>
+                                    <h1 className="text-3xl font-bold app-text-main">
+                                        Arkadaşlık testini oluştur
+                                    </h1>
+                                    <p className="text-sm app-text-muted">
+                                        Sorular senin hakkında olacak. Arkadaşların bu cevaplarını tahmin etmeye
+                                        çalışacak.
+                                    </p>
+                                </div>
 
+                                <div className="rounded-2xl border app-card-soft p-6 shadow-inner">
+                                    {!currentQuestion && !showCustomEditor && (
+                                        <div className="flex flex-col items-start gap-3">
+                                            <h2 className="text-xl font-semibold app-text-main">
+                                                Havuzdaki sorular bitti.
+                                            </h2>
+                                            <p className="text-sm app-text-muted">
+                                                Örnek havuz şimdilik sınırlı. Yeni sorular ekleyene kadar
+                                                seçtiklerinle devam edebilirsin.
+                                            </p>
+                                        </div>
+                                    )}
+
+                                    {currentQuestion && !showCustomEditor && (
+                                        <div className="space-y-5">
+                                            <div className="space-y-1">
+                                                <h2 className="text-xl font-bold app-text-main">
+                                                    {creatorName} {currentQuestion.text}
+                                                </h2>
+                                            </div>
+
+                                            <div className="grid gap-3 sm:grid-cols-2">
+                                                {currentQuestion.options.map((option, index) => (
+                                                    <button
+                                                        key={`${option}-${index}`}
+                                                        type="button"
+                                                        onClick={() => handleSelect(option)}
+                                                        disabled={isComplete}
+                                                        className="group rounded-xl border app-card bg-white px-4 py-3 text-left font-semibold app-text-main transition hover:-translate-y-[1px] hover:shadow disabled:cursor-not-allowed disabled:opacity-50"
+                                                    >
+                                                        <span className="mt-1 block text-lg font-bold app-text-main">
+                                                            {option}
+                                                        </span>
+                                                    </button>
+                                                ))}
+                                            </div>
+
+                                            {isComplete && (
+                                                <p className="rounded-lg border app-card bg-white px-3 py-2 text-sm font-semibold app-text-muted">
+                                                    Maksimum 10 soruyu seçtin.
+                                                </p>
+                                            )}
+                                        </div>
+                                    )}
+
+                                    {showCustomEditor && (
+                                        <div className="space-y-4 rounded-xl border app-card bg-white p-5">
+                                            <div>
+                                                <p className="text-sm font-semibold uppercase tracking-[0.14em] app-text-muted">
+                                                    Kendi sorunu yaz
+                                                </p>
+                                                <p className="mt-1 text-sm app-text-muted">
+                                                    Bu test için özel bir soru ve seçeneklerini yaz. Sonra kaydedip
+                                                    tıpkı diğer sorular gibi cevabını işaretleyeceksin.
+                                                </p>
+                                            </div>
+                                            <div className="space-y-2">
+                                                <label className="text-sm font-semibold app-text-main">
+                                                    Soru metni
+                                                </label>
+                                                <textarea
+                                                    value={customQuestionText}
+                                                    onChange={(e) => setCustomQuestionText(e.target.value)}
+                                                    placeholder="Soruyu buraya yaz..."
+                                                    className="w-full rounded-xl border app-card-soft px-3 py-2 text-sm app-text-main outline-none transition focus:ring-2"
+                                                    rows={3}
+                                                />
+                                            </div>
+                                            <div className="space-y-2">
+                                                <label className="text-sm font-semibold app-text-main">
+                                                    Seçenekler
+                                                </label>
+                                                <div className="space-y-2">
+                                                    {customOptions.map((opt, idx) => (
+                                                        <div key={idx} className="flex gap-2">
+                                                            <input
+                                                                value={opt}
+                                                                onChange={(e) =>
+                                                                    setCustomOptions((prev) => {
+                                                                        const next = [...prev];
+                                                                        next[idx] = e.target.value;
+                                                                        return next;
+                                                                    })
+                                                                }
+                                                                placeholder={`Seçenek ${idx + 1}`}
+                                                                className="flex-1 rounded-xl border app-card-soft px-3 py-2 text-sm app-text-main outline-none transition focus:ring-2"
+                                                            />
+                                                            {customOptions.length > MIN_CUSTOM_OPTIONS && (
+                                                                <button
+                                                                    type="button"
+                                                                    onClick={() => handleRemoveCustomOption(idx)}
+                                                                    className="rounded-xl border border-rose-200 bg-white px-2 text-xs font-semibold text-rose-600 hover:bg-rose-50"
+                                                                >
+                                                                    Sil
+                                                                </button>
+                                                            )}
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                                <button
+                                                    type="button"
+                                                    onClick={handleAddCustomOption}
+                                                    className="mt-2 rounded-full border border-rose-200 bg-white px-3 py-1 text-xs font-semibold text-rose-700 hover:border-rose-300 hover:bg-rose-50"
+                                                >
+                                                    Seçenek ekle +
+                                                </button>
+                                                <p className="text-xs text-rose-700 mt-1">
+                                                    En az {MIN_CUSTOM_OPTIONS} seçenek eklemelisin, istersen daha fazla
+                                                    ekleyebilirsin.
+                                                </p>
+                                            </div>
+                                            <div className="flex flex-wrap gap-3">
+                                                <button
+                                                    type="button"
+                                                    className="rounded-full border border-rose-200 bg-white px-4 py-2 text-sm font-semibold text-rose-700 transition hover:border-rose-300 hover:text-rose-800"
+                                                    onClick={handleCancelCustom}
+                                                >
+                                                    İptal
+                                                </button>
+                                                <button
+                                                    type="button"
+                                                    className="rounded-full border border-rose-500 bg-rose-500 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-rose-600"
+                                                    onClick={handleSaveCustom}
+                                                >
+                                                    Sorumu kaydet
+                                                </button>
+                                            </div>
+                                        </div>
+                                    )}
+                                </div>
+
+                                <div className="flex flex-col gap-3 sm:flex-row sm:justify-end">
+                                    {currentQuestion && !showCustomEditor && (
+                                        <button
+                                            type="button"
+                                            onClick={handleSkip}
+                                            className="rounded-full border border-rose-200 bg-white px-4 py-2 text-sm font-semibold text-rose-700 transition hover:border-rose-300 hover:text-rose-800 disabled:cursor-not-allowed disabled:opacity-50"
+                                            disabled={remainingQueue.length <= 1 || isComplete}
+                                        >
+                                            Soruyu atla
+                                        </button>
+                                    )}
+                                    {!showCustomEditor ? (
+                                        <button
+                                            type="button"
+                                            onClick={() => setShowCustomEditor(true)}
+                                            className="rounded-full border border-rose-500 bg-rose-500 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-rose-600 disabled:opacity-50"
+                                            disabled={isComplete}
+                                        >
+                                            Kendi sorumu eklemek istiyorum
+                                        </button>
+                                    ) : (
+                                        <button
+                                            type="button"
+                                            disabled
+                                            className="rounded-full border border-rose-200 bg-white px-4 py-2 text-sm font-semibold text-rose-400"
+                                        >
+                                            Soru ekleme açık
+                                        </button>
+                                    )}
+                                </div>
+
+                                {isComplete && (
+                                    <div className="mt-4 flex justify-end">
+                                        <button
+                                            type="button"
+                                            onClick={() => setShowConfirmPanel(true)}
+                                            className="rounded-full bg-rose-600 px-5 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-rose-700"
+                                        >
+                                            Testi tamamla
+                                        </button>
+                                    </div>
+                                )}
+                            </>
+                        )}
+                    </div>
+                </div>
+            </div>
+
+            {/* "Testi tamamla" popup'ı */}
+            {showConfirmPanel && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center px-4">
+                    <div
+                        className="absolute inset-0 bg-black/45 backdrop-blur-sm"
+                        onClick={() => setShowConfirmPanel(false)}
+                    />
+                    <div className="relative w-full max-w-md space-y-4 rounded-3xl border border-rose-200 bg-white p-6 shadow-2xl shadow-rose-200/60">
+                        <h4 className="text-lg font-bold text-rose-900">Testi tamamlama</h4>
+                        <p className="text-sm text-rose-700">
+                            Seçtiğin sorular hazır. İstersen önce gözden geçirebilir ya da direkt testi
+                            hazırlayabilirsin.
+                        </p>
                         <div className="flex flex-col gap-3 sm:flex-row sm:justify-end">
-                            {currentQuestion && !showCustomEditor && (
-                                <button
-                                    type="button"
-                                    onClick={handleSkip}
-                                    className="rounded-full border border-rose-200 bg-white px-4 py-2 text-sm font-semibold text-rose-700 transition hover:border-rose-300 hover:text-rose-800 disabled:cursor-not-allowed disabled:opacity-50"
-                                    disabled={remainingQueue.length <= 1 || isComplete}
-                                >
-                                    Soruyu atla
-                                </button>
-                            )}
-                            {!showCustomEditor ? (
-                                <button
-                                    type="button"
-                                    onClick={() => setShowCustomEditor(true)}
-                                    className="rounded-full border border-rose-500 bg-rose-500 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-rose-600 disabled:opacity-50"
-                                    disabled={isComplete}
-                                >
-                                    Kendi sorumu eklemek istiyorum
-                                </button>
-                            ) : (
-                                <button
-                                    type="button"
-                                    disabled
-                                    className="rounded-full border border-rose-200 bg-white px-4 py-2 text-sm font-semibold text-rose-400"
-                                >
-                                    Soru ekleme açık
-                                </button>
-                            )}
+                            <button
+                                type="button"
+                                onClick={() => {
+                                    setShowConfirmPanel(false);
+                                    setShowReviewPanel(true);
+                                }}
+                                className="rounded-full border border-rose-200 bg-white px-4 py-2 text-sm font-semibold text-rose-700 transition hover:border-rose-300 hover:text-rose-800"
+                            >
+                                Soruları gözden geçir
+                            </button>
+                            <button
+                                type="button"
+                                onClick={async () => {
+                                    setShowConfirmPanel(false);
+                                    await handleCreateTest();
+                                }}
+                                className="rounded-full bg-rose-500 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-rose-600"
+                            >
+                                Testi hazırla
+                            </button>
                         </div>
                     </div>
+                </div>
+            )}
 
-                    <aside className="w-full max-w-sm space-y-4 rounded-3xl border border-rose-100 bg-white/90 p-6 shadow-sm backdrop-blur">
-                        <div className="flex items-center justify-between">
-                            <h3 className="text-lg font-bold text-rose-900">Seçilen sorular</h3>
-                            <span className="rounded-full bg-rose-100 px-3 py-1 text-xs font-semibold text-rose-700">
-                                {selectedQuestions.length} / {MAX_SELECTION}
-                            </span>
+            {/* Gözden geçirme popup'ı */}
+            {hasStarted && showReviewPanel && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center px-4">
+                    <div
+                        className="absolute inset-0 bg-black/45 backdrop-blur-sm"
+                        onClick={() => setShowReviewPanel(false)}
+                    />
+                    <div className="relative w-full max-w-md space-y-4 rounded-3xl border border-rose-200 bg-white p-6 shadow-2xl shadow-rose-200/60">
+                        <div className="flex items-start justify-between">
+                            <div>
+                                <h3 className="text-lg font-bold text-rose-900">Seçilen sorular</h3>
+                                <span className="mt-1 inline-block rounded-full bg-rose-100 px-3 py-1 text-xs font-semibold text-rose-700">
+                                    {selectedQuestions.length} / {MAX_SELECTION}
+                                </span>
+                            </div>
+                            <button
+                                type="button"
+                                onClick={() => setShowReviewPanel(false)}
+                                className="rounded-full border border-rose-200 bg-white px-3 py-1 text-xs font-semibold text-rose-700 hover:border-rose-300"
+                            >
+                                ×
+                            </button>
                         </div>
 
                         {selectedQuestions.length === 0 ? (
@@ -382,7 +623,7 @@ export default function CreatePage() {
                                 senin cevabını kaydeder.
                             </p>
                         ) : (
-                            <ul className="space-y-3 text-sm text-rose-900">
+                            <ul className="max-h-72 space-y-3 overflow-auto text-sm text-rose-900 pr-1">
                                 {selectedQuestions.map((item, index) => {
                                     const info = questionLookup.get(item.questionId);
                                     const isCustom = item.questionId.startsWith("custom-");
@@ -391,7 +632,7 @@ export default function CreatePage() {
                                             key={`${item.questionId}-${index}`}
                                             className="rounded-xl border border-rose-100 bg-rose-50/80 px-3 py-2"
                                         >
-                                            <div className="flex items-center justify_between">
+                                            <div className="flex items-center justify-between">
                                                 <p className="text-xs font-semibold uppercase tracking-[0.12em] text-rose-500">
                                                     Soru {index + 1}
                                                 </p>
@@ -409,41 +650,41 @@ export default function CreatePage() {
                             </ul>
                         )}
 
-                        <div className="mt-4 space-y-3 rounded-2xl border border-rose-100 bg-rose-50/80 p-4">
-                            <h4 className="text-base font-bold text-rose-900">Testi oluştur</h4>
-                            <p className="text-sm text-rose-700">
-                                Seçtiğin 10 soruya göre arkadaşlarınla paylaşabileceğin bir test linki oluştur.
-                            </p>
+                        <div className="mt-2 space-y-2">
                             <button
                                 type="button"
                                 onClick={handleCreateTest}
-                                disabled={selectedQuestions.length < MAX_SELECTION}
+                                disabled={
+                                    selectedQuestions.length < MAX_SELECTION ||
+                                    !creatorName.trim() ||
+                                    savingTest
+                                }
                                 className="w-full rounded-full bg-rose-500 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-rose-600 disabled:cursor-not-allowed disabled:opacity-60"
                             >
-                                {selectedQuestions.length < MAX_SELECTION
-                                    ? "Önce 10 soruyu tamamla"
-                                    : "Testi oluştur"}
+                                {savingTest
+                                    ? "Test oluşturuluyor..."
+                                    : selectedQuestions.length < MAX_SELECTION
+                                        ? "Önce 10 soruyu tamamla"
+                                        : !creatorName.trim()
+                                            ? "Önce adını yaz"
+                                            : "Testi hazırla"}
                             </button>
+                            {saveError && (
+                                <p className="text-[11px] text-red-600">
+                                    {saveError}
+                                </p>
+                            )}
                         </div>
-                    </aside>
+                    </div>
                 </div>
-            </div>
+            )}
 
+            {/* Link popup'ı */}
             {showSharePanel && shareLink && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center px-4">
                     <div className="absolute inset-0 bg-black/45 backdrop-blur-sm" />
                     <div className="pointer-events-none absolute inset-0 overflow-hidden">
-                        <span className="absolute left-1/4 top-1/4 h-2 w-2 rounded-full bg-white/80 blur-[2px] animate-ping" />
-                        <span className="absolute right-1/4 top-1/2 h-3 w-3 rounded-full bg-white/70 blur-[2px] animate-[ping_1.6s_ease-in-out_infinite]" />
-                        <span className="absolute left-1/2 bottom-1/3 h-2.5 w-2.5 rounded-full bg-white/70 blur-[1px] animate-[ping_1.8s_ease-in-out_infinite]" />
-                        <span className="absolute right-1/3 bottom-1/4 h-2 w-2 rounded-full bg-white/80 blur-[2px] animate-[ping_1.4s_ease-in-out_infinite]" />
-                        <span className="absolute left-1/5 bottom-1/5 h-3 w-3 rounded-full bg-white/60 blur-[2px] animate-[ping_2s_ease-in-out_infinite]" />
-                        <span className="absolute right-1/5 top-1/5 h-2 w-2 rounded-full bg-white/70 blur-[1px] animate-[ping_1.2s_ease-in-out_infinite]" />
-                        <span className="absolute left-1/3 bottom-1/6 h-2 w-2 rounded-full bg-white/60 blur-[2px] animate-[ping_2.4s_ease-in-out_infinite]" />
-                        <span className="absolute right-1/2 top-1/6 h-2 w-2 rounded-full bg-white/70 blur-[1px] animate-[ping_1.5s_ease-in-out_infinite]" />
-                        <span className="absolute inset-x-1/2 top-1/2 h-1.5 w-1.5 rounded-full bg-white/70 blur-[1px] animate-[ping_1.3s_ease-in-out_infinite]" />
-                        <span className="absolute left-8 top-10 h-1 w-1 rounded-full bg-white/60 blur-[1px]" />
-                        <span className="absolute right-10 bottom-12 h-1 w-1 rounded-full bg-white/60 blur-[1px]" />
+                        {/* senin daha önceki süsler aynen duruyor */}
                     </div>
                     <div className="popup-pop relative w-full max-w-md space-y-4 overflow-hidden rounded-3xl border border-rose-200 bg-white p-6 shadow-2xl shadow-rose-200/60">
                         <div className="pointer-events-none absolute inset-0">

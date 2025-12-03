@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { useParams } from "next/navigation";
+import Link from "next/link";
 import { supabase } from "../../../../lib/supabaseClient";
 
 type TestQuestion = {
@@ -56,7 +57,7 @@ export default function TestSolvePage() {
 
             if (error) {
                 console.error("Test yüklenirken hata:", error);
-                setLoadError("Bu koda ait bir test bulunamadı veya bir hata oluştu.");
+                setLoadError("Bu linke ait bir test bulunamadı ya da test kaldırılmış olabilir.");
                 setLoading(false);
                 return;
             }
@@ -115,10 +116,11 @@ export default function TestSolvePage() {
         }
     };
 
-    // Skor kaydet (Supabase test_results)
+    // Skoru Supabase test_results tablosuna kaydet
     useEffect(() => {
         const saveResult = async () => {
-            if (score === null || !testId || !playerName.trim() || resultSaved || savingResult) return;
+            if (score === null || !testId || !playerName.trim() || resultSaved || savingResult)
+                return;
 
             setSavingResult(true);
             setSaveError(null);
@@ -131,7 +133,7 @@ export default function TestSolvePage() {
 
             if (error) {
                 console.error("Sonuç kaydedilirken hata:", error);
-                setSaveError("Skor kaydedilirken bir hata oluştu.");
+                setSaveError("Skor kaydedilirken bir sorun oluştu.");
                 setSavingResult(false);
                 return;
             }
@@ -158,7 +160,7 @@ export default function TestSolvePage() {
         return (
             <div className="min-h-screen bg-gradient-to-br from-rose-50 via-rose-100 to-rose-50 flex items-center justify-center">
                 <div className="rounded-2xl border border-rose-100 bg-white/90 px-6 py-4 shadow-sm text-sm text-rose-700">
-                    Test yükleniyor...
+                    Test yükleniyor... 🌸
                 </div>
             </div>
         );
@@ -168,10 +170,10 @@ export default function TestSolvePage() {
         return (
             <div className="min-h-screen bg-gradient-to-br from-rose-50 via-rose-100 to-rose-50 flex items-center justify-center px-4">
                 <div className="max-w-md space-y-3 rounded-3xl border border-rose-100 bg-white/90 px-6 py-5 text-center shadow-sm">
-                    <p className="text-sm font-semibold text-rose-600">Test bulunamadı</p>
+                    <p className="text-sm font-semibold text-rose-600">Test bulunamadı 😕</p>
                     <p className="text-sm text-rose-700">
                         {loadError ??
-                            "Bu test artık geçerli olmayabilir veya linkte bir hata olabilir."}
+                            "Bu test artık geçerli olmayabilir veya linkte küçük bir hata olabilir."}
                     </p>
                 </div>
             </div>
@@ -186,39 +188,40 @@ export default function TestSolvePage() {
                 <header className="flex items-center justify-between gap-3">
                     <div>
                         <p className="text-xs font-semibold uppercase tracking-[0.16em] text-rose-500">
-                            Arkadaşlık Testi
+                            Arkadaşlık testi
                         </p>
                         <h1 className="text-2xl font-bold text-rose-900">
-                            Arkadaşının hazırladığı testi çöz
+                            Arkadaşının testini çöz 💫
                         </h1>
+                        <p className="mt-1 text-xs text-rose-600">
+                            Soruları cevapla, onu ne kadar iyi tanıdığını puanın göstersin. ⭐
+                        </p>
                     </div>
-                    <div className="rounded-full bg-white px-4 py-2 text-xs font-semibold text-rose-700 border border-rose-100 shadow-sm">
-                        Kod: <span className="font-mono">{testId}</span>
+                    <div className="hidden sm:flex items-center rounded-full bg-white px-4 py-2 text-[11px] font-semibold text-rose-700 border border-rose-100 shadow-sm">
+                        Bol şans 🍀
                     </div>
                 </header>
 
                 {!hasStarted && !isFinished && (
                     <main className="space-y-4 rounded-3xl border border-rose-100 bg-white/95 p-6 shadow-lg shadow-rose-100/70">
                         <p className="text-sm font-semibold text-rose-700">
-                            Teste başlamadan önce adını yaz:
+                            Başlamadan önce adını yazman yeterli 🌷
                         </p>
                         <input
                             value={playerName}
                             onChange={(e) => setPlayerName(e.target.value)}
-                            placeholder="Örneğin: Ece, Mert..."
+                            placeholder="İstersen takma ad da yazabilirsin..."
                             className="w-full rounded-xl border border-rose-200 bg-rose-50/60 px-3 py-2 text-sm text-rose-900 outline-none transition focus:border-rose-300 focus:ring-2 focus:ring-rose-100"
                         />
                         <button
                             type="button"
                             onClick={handleStart}
                             disabled={!playerName.trim()}
-                            className="mt-2 inline-flex items-center justify-center rounded-full bg-rose-500 px-5 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-rose-600 disabled:cursor-not-allowed disabled:opacity-50"
+                            className="mt-2 inline-flex items-center justify-center gap-1 rounded-full bg-rose-500 px-5 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-rose-600 disabled:cursor-not-allowed disabled:opacity-50"
                         >
-                            Teste başla
+                            <span>Teste başla</span>
+                            <span>🚀</span>
                         </button>
-                        <p className="text-[11px] text-rose-600">
-                            İsmin skor tablosunda görünecek. Sadece bu test için kullanılır.
-                        </p>
                     </main>
                 )}
 
@@ -234,7 +237,7 @@ export default function TestSolvePage() {
                                 </h2>
                             </div>
                             <div className="rounded-full bg-rose-50 px-3 py-1 text-[11px] font-semibold text-rose-600 border border-rose-100">
-                                Geri dönüş yok
+                                Tek cevap hakkı 🔒
                             </div>
                         </div>
 
@@ -284,11 +287,6 @@ export default function TestSolvePage() {
                                 );
                             })}
                         </div>
-
-                        <p className="text-xs text-rose-600">
-                            Seçtiğin cevap kaydedilir, önceki soruya geri dönemezsin. Cevabı işaretledikten
-                            sonra doğru/yanlış gösterimi kısa bir süre görüp bir sonraki soruya geçeceksin.
-                        </p>
                     </main>
                 )}
 
@@ -296,28 +294,44 @@ export default function TestSolvePage() {
                     <main className="space-y-5 rounded-3xl border border-rose-100 bg-white/95 p-6 shadow-lg shadow-rose-100/70">
                         <p className="text-sm font-semibold text-rose-600">Test tamamlandı 🎉</p>
                         <p className="text-2xl font-bold text-rose-900">
-                            {playerName.trim() || "İsimsiz"} skorun: {score} / {totalQuestions}
+                            {playerName.trim() || "İsimsiz"} için skor: {score} / {totalQuestions} ⭐
                         </p>
+                        <p className="text-xs text-rose-600">
+                            Arkadaşının nasıl bir test hazırladığını görmek için sonuçlar kısmına da bakabilirsin. 💖
+                        </p>
+
                         {savingResult && (
                             <p className="text-xs text-rose-600">Skorun kaydediliyor...</p>
                         )}
                         {resultSaved && !savingResult && !saveError && (
                             <p className="text-xs text-green-700">
-                                Skorun bu testin skor tablosuna kaydedildi.
+                                Skorun bu testin sonuç listesine eklendi. 🎀
                             </p>
                         )}
                         {saveError && (
                             <p className="text-xs text-red-600">
-                                {saveError} Yine de testi tekrar çözebilirsin.
+                                {saveError} Yine de istersen testi tekrar çözebilirsin.
                             </p>
                         )}
-                        <button
-                            type="button"
-                            onClick={handleRestart}
-                            className="mt-2 inline-flex items-center justify-center rounded-full bg-rose-500 px-5 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-rose-600"
-                        >
-                            Testi yeniden çöz
-                        </button>
+
+                        <div className="flex flex-wrap gap-3 mt-2">
+                            <button
+                                type="button"
+                                onClick={handleRestart}
+                                className="inline-flex items-center justify-center gap-1 rounded-full bg-rose-500 px-5 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-rose-600"
+                            >
+                                <span>Testi yeniden çöz</span>
+                                <span>🔁</span>
+                            </button>
+
+                            <Link
+                                href={`/results/${testId}`}
+                                className="inline-flex items-center justify-center gap-1 rounded-full border border-rose-300 bg-white px-5 py-2 text-sm font-semibold text-rose-700 shadow-sm transition hover:border-rose-400 hover:text-rose-800"
+                            >
+                                <span>Skor tablosunu gör</span>
+                                <span>📊</span>
+                            </Link>
+                        </div>
                     </main>
                 )}
             </div>
