@@ -130,8 +130,9 @@ const questionPool: Question[] = [
     },
     {
         id: "q18",
-        text: "en çok hangi emojiyi kullanır?",
-        options: ["😂", "🥲", "😍", "🤔"],
+        text: "Günün en sevdiği zamanı hangisi?",
+        options: ["Sabah", "Gün ortası", "Akşam", "Gece"],
+
     },
     {
         id: "q19",
