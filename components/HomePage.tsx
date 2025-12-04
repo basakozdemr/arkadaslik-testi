@@ -57,7 +57,7 @@ export default function HomePage() {
               <h2 className="text-lg font-bold text-rose-900">
                 Hazırladığın testler 💌
               </h2>
-              <p className="text-xs text-rose-600">
+              <p className="text-s text-rose-600">
                 Daha önce oluşturduğun testler burada listelenir; istediğin zaman tekrar açıp
                 sonuçlara bakabilirsin.
               </p>
@@ -90,7 +90,7 @@ export default function HomePage() {
                     className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-rose-100 bg-rose-50/60 px-3 py-2"
                   >
                     <div className="space-y-0.5">
-                      <p className="text-xs font-semibold uppercase tracking-[0.14em] text-rose-500">
+                      <p className="text-ss font-semibold uppercase tracking-[0.14em] text-rose-500">
                         Test #{index + 1}
                       </p>
                       {test.creatorName && (
@@ -105,14 +105,14 @@ export default function HomePage() {
                     <div className="flex flex-wrap items-center gap-2">
                       <Link
                         href={testUrl}
-                        className="inline-flex items-center gap-1 rounded-full bg-white px-3 py-1.5 text-xs font-semibold text-rose-700 shadow-sm border border-rose-200 hover:bg-rose-50"
+                        className="inline-flex items-center gap-1 rounded-full bg-white px-3 py-1.5 text-s font-semibold text-rose-700 shadow-sm border border-rose-200 hover:bg-rose-50"
                       >
                         <span>Testi aç</span>
                         <span>✨</span>
                       </Link>
                       <Link
                         href={resultUrl}
-                        className="inline-flex items-center gap-1 rounded-full bg-rose-500 px-3 py-1.5 text-xs font-semibold text-white shadow-sm hover:bg-rose-600"
+                        className="inline-flex items-center gap-1 rounded-full bg-rose-500 px-3 py-1.5 text-s font-semibold text-white shadow-sm hover:bg-rose-600"
                       >
                         <span>Sonuçları gör</span>
                         <span>📊</span>

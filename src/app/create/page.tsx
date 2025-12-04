@@ -327,22 +327,28 @@ export default function CreatePage() {
                                     <h1 className="text-3xl font-bold app-text-main">
                                         Testini hazırlamaya başla
                                     </h1>
-                                    <p className="text-sm app-text-muted">
+                                    <p className="text-s app-text-muted">
                                         Önce testin kime ait olduğunu seçelim. Sonra senin hakkında sorulardan
                                         oluşan testi hazırlayacağız.
                                     </p>
                                 </div>
                                 <div className="space-y-2">
-                                    <label className="text-xs font-semibold app-text-main">
+                                    <label className="text-s font-semibold app-text-main">
                                         Bu testi kim hazırlıyor? (Adın)
                                     </label>
                                     <input
                                         value={creatorName}
-                                        onChange={(e) => setCreatorName(e.target.value)}
+                                        onChange={(e) => {
+                                            const val = e.target.value;
+                                            const formatted =
+                                                val.charAt(0).toUpperCase() + val.slice(1);
+                                            setCreatorName(formatted);
+                                        }}
                                         placeholder="Adını yaz"
                                         className="w-full rounded-xl border app-card-soft px-3 py-2 text-sm app-text-main outline-none transition focus:ring-2"
                                     />
-                                    <p className="text-[11px] app-text-muted">
+
+                                    <p className="text-[14px] app-text-muted">
                                         Testi çözen arkadaşların, bu isme göre kimin testini çözdüklerini görecek.
                                     </p>
                                     {saveError && (
