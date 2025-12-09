@@ -24,7 +24,16 @@ const questionPool: Question[] = [
     {
         id: "q1",
         text: "en sık hangisini yapar?",
-        options: ["Evde kalır", "Dışarı çıkar", "Aileyle vakit geçirir"],
+        options: [
+            "Evde kalır",
+            "Dışarı çıkar",
+            "Aileyle vakit geçirir",
+            "Arkadaşlarıyla buluşur",
+            "Kafede oturur",
+            "Yürüyüşe çıkar",
+            "Alışverişe gider",
+            "Hobileriyle ilgilenir (resim, müzik, oyun...)"
+        ],
     },
     {
         id: "q2",
@@ -71,12 +80,12 @@ const questionPool: Question[] = [
     {
         id: "q8",
         text: "evcil hayvan olarak hangisine daha yakındır?",
-        options: ["Kedi", "Köpek"],
+        options: ["Kedi", "Köpek", "Balık", "Kuş"],
     },
     {
         id: "q9",
         text: "önemli bir şey anlatırken hangi iletişim şeklini kullanır?",
-        options: ["Sesli mesaj", "Uzun yazılı mesaj", "Telefon araması", "Yüz yüze konuşma"],
+        options: ["Sesli mesaj", "Uzun yazılı mesaj", "Telefon araması", "Yüz yüze konuşma", "Görüntülü konuşma"],
     },
     {
         id: "q10",
@@ -96,12 +105,13 @@ const questionPool: Question[] = [
     {
         id: "q13",
         text: "internette en çok hangi tür içerikleri izler?",
-        options: ["Vlog", "Eğitici videolar", "Komik videolar", "Dizi/film sahneleri"],
+        options: ["Vlog", "Eğitici videolar", "Oyun videoları", "Komik videolar", "Dizi/film sahneleri"],
     },
     {
         id: "q14",
-        text: "hediye seçerken neye önem verir?",
-        options: ["Anlamlı olmasına", "İşe yaramasına", "Eğlenceli olmasına"],
+        text: "Bir şey satın alırken nasıl karar verir?",
+        options: ["Hızlıca alır", "Uzun uzun araştırır", "Fikir alır", "İndirim bekler"],
+
     },
     {
         id: "q15",
@@ -328,13 +338,13 @@ export default function CreatePage() {
                                     <h1 className="text-3xl font-bold app-text-main">
                                         Testini hazırlamaya başla
                                     </h1>
-                                    <p className="text-s app-text-muted">
+                                    <p className="text-base app-text-muted">
                                         Önce testin kime ait olduğunu seçelim. Sonra senin hakkında sorulardan
                                         oluşan testi hazırlayacağız.
                                     </p>
                                 </div>
                                 <div className="space-y-2">
-                                    <label className="text-s font-semibold app-text-main">
+                                    <label className="text-base font-semibold app-text-main">
                                         Bu testi kim hazırlıyor? (Adın)
                                     </label>
                                     <input
@@ -349,7 +359,7 @@ export default function CreatePage() {
                                         className="w-full rounded-xl border app-card-soft px-3 py-2 text-sm app-text-main outline-none transition focus:ring-2"
                                     />
 
-                                    <p className="text-[14px] app-text-muted">
+                                    <p className="text-sm app-text-muted">
                                         Testi çözen arkadaşların, bu isme göre kimin testini çözdüklerini görecek.
                                     </p>
                                     {saveError && (
@@ -376,7 +386,7 @@ export default function CreatePage() {
                                     <h1 className="text-3xl font-bold app-text-main">
                                         Arkadaşlık testini oluştur
                                     </h1>
-                                    <p className="text-sm app-text-muted">
+                                    <p className="text-base app-text-muted">
                                         Sorular senin hakkında olacak. Arkadaşların bu cevaplarını tahmin etmeye
                                         çalışacak.
                                     </p>
@@ -430,16 +440,16 @@ export default function CreatePage() {
                                     {showCustomEditor && (
                                         <div className="space-y-4 rounded-xl border app-card bg-white p-5">
                                             <div>
-                                                <p className="text-sm font-semibold uppercase tracking-[0.14em] app-text-muted">
+                                                <p className="text-base font-semibold uppercase tracking-[0.14em] app-text-muted">
                                                     Kendi sorunu yaz
                                                 </p>
-                                                <p className="mt-1 text-sm app-text-muted">
+                                                <p className="mt-1 text-base app-text-muted">
                                                     Bu test için özel bir soru ve seçeneklerini yaz. Sonra kaydedip
                                                     tıpkı diğer sorular gibi cevabını işaretleyeceksin.
                                                 </p>
                                             </div>
                                             <div className="space-y-2">
-                                                <label className="text-sm font-semibold app-text-main">
+                                                <label className="text-base font-semibold app-text-main">
                                                     Soru metni
                                                 </label>
                                                 <textarea
@@ -451,7 +461,7 @@ export default function CreatePage() {
                                                 />
                                             </div>
                                             <div className="space-y-2">
-                                                <label className="text-sm font-semibold app-text-main">
+                                                <label className="text-base font-semibold app-text-main">
                                                     Seçenekler
                                                 </label>
                                                 <div className="space-y-2">
@@ -484,11 +494,11 @@ export default function CreatePage() {
                                                 <button
                                                     type="button"
                                                     onClick={handleAddCustomOption}
-                                                    className="mt-2 rounded-full border border-rose-200 bg-white px-3 py-1 text-xs font-semibold text-rose-700 hover:border-rose-300 hover:bg-rose-50"
+                                                    className="mt-2 rounded-full border border-rose-200 bg-white px-3 py-1 text-sm font-semibold text-rose-700 hover:border-rose-300 hover:bg-rose-50"
                                                 >
                                                     Seçenek ekle +
                                                 </button>
-                                                <p className="text-xs text-rose-700 mt-1">
+                                                <p className="text-sm text-rose-700 mt-1">
                                                     En az {MIN_CUSTOM_OPTIONS} seçenek eklemelisin, istersen daha fazla
                                                     ekleyebilirsin.
                                                 </p>

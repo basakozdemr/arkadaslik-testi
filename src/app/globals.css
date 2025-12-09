@@ -1,5 +1,11 @@
 @import "tailwindcss";
 
+
+html {
+  font-size: 20px;
+  /* varsayılan 16px, 17–18–19 deneyebilirsin */
+}
+
 :root {
   --background: #ffffff;
   --foreground: #171717;
