@@ -14,6 +14,7 @@ type TestQuestion = {
 
 type TestRow = {
     questions: TestQuestion[];
+    creator_name: string; // 🔴 BURAYA EKLEDİK
 };
 
 export default function TestSolvePage() {
@@ -35,6 +36,9 @@ export default function TestSolvePage() {
     const [savingResult, setSavingResult] = useState(false);
     const [resultSaved, setResultSaved] = useState(false);
 
+    // 🔴 TESTİ OLUŞTURANIN ADI İÇİN STATE
+    const [creatorName, setCreatorName] = useState<string>("");
+
     const totalQuestions = questions?.length ?? 0;
 
     const currentQuestion = useMemo(
@@ -51,7 +55,7 @@ export default function TestSolvePage() {
 
             const { data, error } = await supabase
                 .from("tests")
-                .select("questions")
+                .select("questions, creator_name") // 🔴 BURADA ARTIK CREATOR_NAME DE ÇEKİLİYOR
                 .eq("id", testId)
                 .single<TestRow>();
 
@@ -69,6 +73,7 @@ export default function TestSolvePage() {
             }
 
             setQuestions(data.questions);
+            setCreatorName(data.creator_name || ""); // 🔴 TESTİ OLUŞTURANIN ADINI STATE'E ATTIK
             setCurrentIndex(0);
             setAnswers({});
             setScore(null);
@@ -233,7 +238,10 @@ export default function TestSolvePage() {
                                     Soru {currentIndex + 1} / {totalQuestions}
                                 </p>
                                 <h2 className="text-lg font-semibold text-rose-900">
-                                    {currentQuestion.text}
+                                    {/* 🔴 BURADA ARTIK TESTİ OLUŞTURANIN ADI DA VAR */}
+                                    {creatorName
+                                        ? `${creatorName} ${currentQuestion.text}`
+                                        : currentQuestion.text}
                                 </h2>
                             </div>
                             <div className="rounded-full bg-rose-50 px-3 py-1 text-[11px] font-semibold text-rose-600 border border-rose-100">
