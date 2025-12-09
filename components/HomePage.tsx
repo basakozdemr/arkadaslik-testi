@@ -26,7 +26,7 @@ export default function HomePage() {
             <p className="text-sm font-semibold uppercase tracking-[0.16em] app-text-muted">
               💘 Arkadaşlık testi
             </p>
-            <h1 className="text-3xl font-bold app-text-main">
+            <h1 className="text-3xl font-medium app-text-main ">
               Arkadaşların seni ne kadar tanıyor? 💫
             </h1>
             <p className="text-base app-text-muted">
@@ -54,10 +54,10 @@ export default function HomePage() {
         <section className="rounded-3xl border border-rose-100 bg-white/90 p-6 shadow-sm">
           <div className="flex items-center justify-between gap-2">
             <div>
-              <h2 className="text-lg font-bold text-rose-900">
+              <h2 className="text-lg font-medium text-rose-900">
                 Hazırladığın testler 💌
               </h2>
-              <p className="text-s text-rose-600">
+              <p className="text-sm text-rose-600">
                 Daha önce oluşturduğun testler burada listelenir; istediğin zaman tekrar açıp
                 sonuçlara bakabilirsin.
               </p>
