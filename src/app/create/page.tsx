@@ -14,8 +14,10 @@ type Question = {
 type SelectedQuestion = {
     questionId: string;
     text: string;
+    options: string[];
     answer: string;
 };
+
 
 const MAX_SELECTION = 10;
 const MIN_CUSTOM_OPTIONS = 2;
@@ -232,6 +234,26 @@ export default function CreatePage() {
     const [shareLink, setShareLink] = useState<string | null>(null);
     const [showSharePanel, setShowSharePanel] = useState(false);
     const [copyStatus, setCopyStatus] = useState<"idle" | "copied">("idle");
+    const [openQuestionId, setOpenQuestionId] = useState<string | null>(null);
+
+    const toggleQuestionOpen = (id: string) => {
+        setOpenQuestionId((prev) => (prev === id ? null : id));
+    };
+
+    const handleReviewAnswerChange = (questionId: string, newAnswer: string) => {
+        setSelectedQuestions((prev) =>
+            prev.map((q) =>
+                q.questionId === questionId ? { ...q, answer: newAnswer } : q
+            )
+        );
+    };
+
+    const handleRemoveSelectedQuestion = (questionId: string) => {
+        setSelectedQuestions((prev) =>
+            prev.filter((q) => q.questionId !== questionId)
+        );
+        setOpenQuestionId((prev) => (prev === questionId ? null : prev));
+    };
 
     const [createdTestCode, setCreatedTestCode] = useState<string | null>(null);
 
@@ -266,11 +288,17 @@ export default function CreatePage() {
 
         setSelectedQuestions((prev) => [
             ...prev,
-            { questionId: currentQuestion.id, text: currentQuestion.text, answer: option },
+            {
+                questionId: currentQuestion.id,
+                text: currentQuestion.text,
+                options: currentQuestion.options, // 👈 eklendi
+                answer: option,
+            },
         ]);
 
         setRemainingQueue((prev) => prev.slice(1));
     };
+
 
     const handleSkip = () => {
         setRemainingQueue((prev) => {
@@ -352,13 +380,16 @@ export default function CreatePage() {
 
         const questionsPayload = selectedQuestions.map((item) => {
             const info = questionLookup.get(item.questionId);
+            const optionsFromState = item.options ?? [];
+            const optionsFromPool = info?.options ?? [];
             return {
                 id: item.questionId,
                 text: info?.text ?? item.text,
-                options: info?.options ?? [],
+                options: optionsFromState.length ? optionsFromState : optionsFromPool,
                 answer: item.answer,
             };
         });
+
 
         const { error } = await supabase.from("tests").insert({
             id: code,
@@ -729,28 +760,108 @@ export default function CreatePage() {
                                 {selectedQuestions.map((item, index) => {
                                     const info = questionLookup.get(item.questionId);
                                     const isCustom = item.questionId.startsWith("custom-");
+                                    const isOpen = openQuestionId === item.questionId;
+
+                                    // Şıkları ya state'ten, ya pool'dan çek
+                                    const options =
+                                        (item.options && item.options.length > 0
+                                            ? item.options
+                                            : info?.options) ?? [];
+
                                     return (
                                         <li
                                             key={`${item.questionId}-${index}`}
-                                            className="rounded-xl border border-rose-100 bg-rose-50/80 px-3 py-2"
+                                            className="rounded-xl border border-rose-100 bg-rose-50/80"
                                         >
-                                            <div className="flex items-center justify-between">
-                                                <p className="text-xs font-semibold uppercase tracking-[0.12em] text-rose-500">
-                                                    Soru {index + 1}
-                                                </p>
-                                                {isCustom && (
-                                                    <span className="rounded-full bg-rose-100 px-2 py-1 text-[11px] font-semibold text-rose-600">
-                                                        Özel soru
-                                                    </span>
-                                                )}
-                                            </div>
-                                            <p className="font-semibold">{info?.text ?? item.text}</p>
-                                            <p className="text-xs text-rose-700">Cevabın: {item.answer}</p>
+                                            {/* Üst kısım – başlık satırı (tıklandığında aç/kapa) */}
+                                            <button
+                                                type="button"
+                                                onClick={() => toggleQuestionOpen(item.questionId)}
+                                                className="flex w-full items-center justify-between px-3 py-2 text-left"
+                                            >
+                                                <div>
+                                                    <div className="flex items-center gap-2">
+                                                        <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-rose-500">
+                                                            Soru {index + 1}
+                                                        </p>
+                                                        {isCustom && (
+                                                            <span className="rounded-full bg-rose-100 px-2 py-1 text-[10px] font-semibold text-rose-600">
+                                                                Özel soru
+                                                            </span>
+                                                        )}
+                                                    </div>
+                                                    <p className="text-sm font-semibold">
+                                                        {info?.text ?? item.text}
+                                                    </p>
+                                                    {item.answer && (
+                                                        <p className="mt-1 text-[11px] text-rose-700">
+                                                            Cevabın:{" "}
+                                                            <span className="font-semibold">
+                                                                {item.answer}
+                                                            </span>
+                                                        </p>
+                                                    )}
+                                                </div>
+                                                <span className="ml-2 text-xs text-rose-500">
+                                                    {isOpen ? "▲" : "▼"}
+                                                </span>
+                                            </button>
+
+                                            {/* Alt kısım – açılınca görünen bölüm */}
+                                            {isOpen && (
+                                                <div className="border-t border-rose-100 bg-white/70 px-3 py-3 space-y-3">
+                                                    {/* Cevabı değiştirme alanı */}
+                                                    <div className="space-y-1">
+                                                        <p className="text-[11px] font-semibold text-rose-700">
+                                                            Cevabını değiştirmek istersen:
+                                                        </p>
+                                                        <div className="space-y-1">
+                                                            {options.map((opt) => (
+                                                                <label
+                                                                    key={opt}
+                                                                    className="flex items-center gap-2 text-xs text-rose-900 cursor-pointer"
+                                                                >
+                                                                    <input
+                                                                        type="radio"
+                                                                        name={item.questionId}
+                                                                        value={opt}
+                                                                        checked={item.answer === opt}
+                                                                        onChange={() =>
+                                                                            handleReviewAnswerChange(
+                                                                                item.questionId,
+                                                                                opt
+                                                                            )
+                                                                        }
+                                                                        className="h-3 w-3"
+                                                                    />
+                                                                    <span>{opt}</span>
+                                                                </label>
+                                                            ))}
+                                                        </div>
+                                                    </div>
+
+                                                    {/* Silme butonu */}
+                                                    <div className="flex justify-end">
+                                                        <button
+                                                            type="button"
+                                                            onClick={() =>
+                                                                handleRemoveSelectedQuestion(
+                                                                    item.questionId
+                                                                )
+                                                            }
+                                                            className="text-[11px] font-semibold text-red-500 hover:text-red-600"
+                                                        >
+                                                            Soruyu sil 🗑️
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            )}
                                         </li>
                                     );
                                 })}
                             </ul>
                         )}
+
 
                         <div className="mt-2 space-y-2">
                             <button
