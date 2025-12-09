@@ -385,24 +385,28 @@ export default function CreatePage() {
                                     <p className="text-sm font-semibold uppercase tracking-[0.16em] app-text-muted">
                                         💘 Arkadaşlık testi
                                     </p>
+
                                     <h1 className="text-3xl font-bold app-text-main">
-                                        Testini hazırlamaya başla
+                                        Testini hazırlamaya başla ✨
                                     </h1>
+
                                     <p className="text-base app-text-muted">
-                                        Önce testin kime ait olduğunu seçelim. Sonra senin hakkında sorulardan
-                                        oluşan testi hazırlayacağız.
+                                        🤝 Önce testin kime ait olduğunu seçelim.
+                                        Sonra senin hakkında sorulardan oluşan testi hazırlayacağız. 🌷
                                     </p>
+
                                 </div>
+
                                 <div className="space-y-2">
                                     <label className="text-base font-semibold app-text-main">
                                         Bu testi kim hazırlıyor?
                                     </label>
+
                                     <input
                                         value={creatorName}
                                         onChange={(e) => {
                                             const val = e.target.value;
-                                            const formatted =
-                                                val.charAt(0).toUpperCase() + val.slice(1);
+                                            const formatted = val.charAt(0).toUpperCase() + val.slice(1);
                                             setCreatorName(formatted);
                                         }}
                                         placeholder="Adını yaz"
@@ -410,12 +414,14 @@ export default function CreatePage() {
                                     />
 
                                     <p className="text-sm app-text-muted">
-                                        Testi çözen arkadaşların, bu isme göre kimin testini çözdüklerini görecek.
+                                        📌 Testi çözen arkadaşların bu isme göre kimin testini çözdüklerini görecek.
                                     </p>
+
                                     {saveError && (
-                                        <p className="text-[11px] text-red-600 mt-1">{saveError}</p>
+                                        <p className="text-[11px] text-red-600 mt-1">⚠️ {saveError}</p>
                                     )}
                                 </div>
+
                                 <div className="pt-2">
                                     <button
                                         type="button"
