@@ -3,6 +3,7 @@ import "./globals.css";
 import type { Metadata } from "next";
 import { MainHeader } from "../../components/layout/MainHeader";
 import { Sour_Gummy } from "next/font/google";
+import Script from "next/script";
 
 const sourGummy = Sour_Gummy({
   subsets: ["latin"],
@@ -22,6 +23,24 @@ export default function RootLayout({
 }) {
   return (
     <html lang="tr" className={sourGummy.variable}>
+      <head>
+        {/* Google Analytics - Arkadaşlık Testi */}
+        <Script
+          async
+          src="https://www.googletagmanager.com/gtag/js?id=G-BYZXCD5V12"
+        />
+        <Script id="ga-arkadaslik" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-BYZXCD5V12', {
+              page_path: window.location.pathname,
+            });
+          `}
+        </Script>
+      </head>
+
       <body>
         <MainHeader />
         {children}
