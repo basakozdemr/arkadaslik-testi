@@ -23,136 +23,167 @@ const MIN_CUSTOM_OPTIONS = 2;
 const questionPool: Question[] = [
     {
         id: "q1",
-        text: "en sık hangisini yapar?",
-        options: [
-            "Evde kalır",
-            "Dışarı çıkar",
-            "Aileyle vakit geçirir",
-            "Arkadaşlarıyla buluşur",
-            "Kafede oturur",
-            "Yürüyüşe çıkar",
-            "Alışverişe gider",
-            "Hobileriyle ilgilenir (resim, müzik, oyun...)"
-        ],
+        text: "Günün hangi saatinde daha enerjik olur?",
+        options: ["Sabah erken 🌅", "Öğlen 🌞", "Gece geç 🌙✨"],
     },
     {
         id: "q2",
-        text: "bir kafede genellikle ne sipariş eder?",
-        options: ["Kahve", "Çay", "Soğuk içecek", "Tatlı"],
+        text: "Bir kafede genellikle ne sipariş eder?",
+        options: ["Kahve ☕", "Çay 🍵", "Soğuk içecek 🥤", "Tatlı 🍰"],
     },
     {
         id: "q3",
-        text: "stresliyken en çok ne yapmayı tercih eder?",
+        text: "Stresliyken en çok ne yapmayı tercih eder?",
         options: [
-            "Yürüyüşe çıkar",
-            "Müzik dinler",
-            "Dizi/film izler",
-            "Uyur",
-            "Arkadaşlarıyla konuşur",
+            "Yürüyüşe çıkar 🚶‍♀️",
+            "Müzik dinler 🎧",
+            "Dizi/film izler 📺",
+            "Uyur 😴",
+            "Arkadaşlarıyla konuşur 💬",
         ],
     },
     {
         id: "q4",
-        text: "mesajlaşırken hangi tarzı daha çok kullanır?",
+        text: "Mesajlaşırken hangi tarzı daha çok kullanır?",
         options: [
-            "Emoji dolu mesajlar",
-            "Kısa ve net mesajlar",
-            "Uzun paragraflar",
-            "Sadece önemli şeyleri yazar",
-            "Sesli mesaj atar",
+            "Emoji dolu mesajlar 😂💖",
+            "Kısa ve net mesajlar ✍️",
+            "Uzun paragraflar 📄",
+            "Sadece önemli şeyleri yazar ⚡",
+            "Sesli mesaj atar 🎤",
         ],
     },
     {
         id: "q5",
-        text: "karakter olarak hangisine daha yakındır?",
-        options: ["Planlı", "Spontane", "Kararsız", "Duruma göre değişir"],
+        text: "Karakter olarak hangisine daha yakındır?",
+        options: ["Planlı 📅", "Spontane 🎲", "Kararsız 🤔", "Duruma göre değişir 🔄"],
     },
     {
         id: "q6",
-        text: "günün hangi saatinde daha enerjik olur?",
-        options: ["Sabah erken", "Öğlen", "Gece geç"],
+        text: "Günün en sevdiği zamanı hangisi?",
+        options: ["Sabah ☀️", "Gün ortası 🌤️", "Akşam 🌇", "Gece 🌙"],
     },
     {
         id: "q7",
-        text: "bir plan iptal olduğunda en çok nasıl hisseder?",
-        options: ["Rahatlar", "Üzülür", "Umursamaz", "Hemen yeni plan yapar"],
+        text: "Bir plan iptal olduğunda en çok nasıl hisseder?",
+        options: ["Rahatlar 😌", "Üzülür 😔", "Umursamaz 😐", "Hemen yeni plan yapar 📌"],
     },
     {
         id: "q8",
-        text: "evcil hayvan olarak hangisine daha yakındır?",
-        options: ["Kedi", "Köpek", "Balık", "Kuş"],
+        text: "Evcil hayvan olarak hangisine daha yakındır?",
+        options: ["Kedi 🐱", "Köpek 🐶", "Balık 🐠", "Kuş 🐦"],
     },
     {
         id: "q9",
-        text: "önemli bir şey anlatırken hangi iletişim şeklini kullanır?",
-        options: ["Sesli mesaj", "Uzun yazılı mesaj", "Telefon araması", "Yüz yüze konuşma", "Görüntülü konuşma"],
+        text: "Önemli bir şey anlatırken hangi iletişim şeklini kullanır?",
+        options: [
+            "Sesli mesaj 🎤",
+            "Uzun yazılı mesaj ✍️",
+            "Telefon araması 📞",
+            "Yüz yüze konuşma 👥",
+            "Görüntülü konuşma 📹",
+        ],
     },
     {
         id: "q10",
-        text: "birlikte zaman geçirirken en çok hangisini tercih eder?",
-        options: ["Sakin kafede oturmak", "Kalabalık bir yere gitmek", "Evde buluşmak", "Dışarıda yürüyüş"],
+        text: "Birlikte zaman geçirirken en çok hangisini tercih eder?",
+        options: [
+            "Sakin kafede oturmak ☕",
+            "Kalabalık bir yere gitmek 🎡",
+            "Evde buluşmak 🏠",
+            "Dışarıda yürüyüş 🚶‍♂️",
+        ],
     },
     {
         id: "q11",
-        text: "kararsız kaldığında genellikle ne yapar?",
-        options: ["Yakın arkadaşına sorar", "Kendi kendine düşünür", "Bekler", "İnternetten araştırır"],
+        text: "Kararsız kaldığında genellikle ne yapar?",
+        options: [
+            "Yakın arkadaşına sorar 🧑‍🤝‍🧑",
+            "Kendi kendine düşünür 🤔",
+            "Bekler ⏳",
+            "İnternetten araştırır 🔍",
+        ],
     },
     {
         id: "q12",
-        text: "uyku düzeni nasıldır?",
-        options: ["Erken uyur", "Geç uyur", "Düzensiz uyur", "Fırsat buldukça uyur"],
+        text: "Uyku düzeni nasıldır?",
+        options: ["Erken uyur 🌙", "Geç uyur 🌃", "Düzensiz uyur 🔄", "Fırsat buldukça uyur 😴"],
     },
     {
         id: "q13",
-        text: "internette en çok hangi tür içerikleri izler?",
-        options: ["Vlog", "Eğitici videolar", "Oyun videoları", "Komik videolar", "Dizi/film sahneleri"],
+        text: "İnternette en çok hangi tür içerikleri izler?",
+        options: [
+            "Vlog 📹",
+            "Eğitici videolar 🎓",
+            "Oyun videoları 🎮",
+            "Komik videolar 😂",
+            "Dizi/film sahneleri 🎬",
+        ],
     },
     {
         id: "q14",
         text: "Bir şey satın alırken nasıl karar verir?",
-        options: ["Hızlıca alır", "Uzun uzun araştırır", "Fikir alır", "İndirim bekler"],
-
+        options: [
+            "Hızlıca alır ⚡",
+            "Uzun uzun araştırır 🔍",
+            "Fikir alır 💬",
+            "İndirim bekler 🏷️",
+        ],
     },
     {
         id: "q15",
-        text: "birlikte geçirilen zamanlardan hangisini özel bulur?",
+        text: "Birlikte geçirilen zamanlardan hangisini özel bulur?",
         options: [
-            "Uzun sohbetleri",
-            "Birlikte bir şeyler izlemeyi",
-            "Yeni yer keşfetmeyi",
-            "Kısa ama samimi buluşmaları",
+            "Uzun sohbetleri 🗣️",
+            "Birlikte bir şeyler izlemeyi 🎥",
+            "Yeni yer keşfetmeyi 🌍",
+            "Kısa ama samimi buluşmaları 🤍",
         ],
     },
     {
         id: "q16",
-        text: "sosyal olarak hangisine yakındır?",
-        options: ["İçe dönük", "Dışa dönük", "İkisi arası", "Duruma göre değişir"],
+        text: "Sosyal olarak hangisine yakındır?",
+        options: ["İçe dönük 😶", "Dışa dönük 😄", "İkisi arası ⚖️", "Duruma göre değişir 🔄"],
     },
     {
         id: "q17",
-        text: "önemli bir gün yaklaştığında nasıl davranır?",
+        text: "Önemli bir gün yaklaştığında nasıl davranır?",
         options: [
-            "Her şeyi planlar",
-            "Son ana bırakır",
-            "Başkası karar versin ister",
-            "O an ne isterse onu yapar",
+            "Her şeyi planlar 📅",
+            "Son ana bırakır ⏳",
+            "Başkası karar versin ister 🙋‍♀️",
+            "O an ne isterse onu yapar 🎈",
         ],
     },
     {
         id: "q18",
-        text: "Günün en sevdiği zamanı hangisi?",
-        options: ["Sabah", "Gün ortası", "Akşam", "Gece"],
-
+        text: "En sık hangisini yapar?",
+        options: [
+            "Evde kalır 🏠",
+            "Dışarı çıkar 🚶‍♀️",
+            "Aileyle vakit geçirir 👨‍👩‍👧",
+            "Arkadaşlarıyla buluşur 🤝",
+            "Kafede oturur ☕",
+            "Yürüyüşe çıkar 🌿",
+            "Alışverişe gider 🛍️",
+            "Hobileriyle ilgilenir (resim, müzik, oyun...) 🎨🎧🎮",
+        ],
     },
     {
         id: "q19",
-        text: "sabah uyandığında ilk ne yapar?",
-        options: ["Telefona bakar", "Mesajlara cevap verir", "Müzik açar", "Bir süre yatakta kalır"],
+        text: "Sabah uyandığında ilk ne yapar?",
+        options: ["Telefona bakar 📱", "Mesajlara cevap verir 💬", "Müzik açar 🎶", "Bir süre yatakta kalır 🛏️"],
     },
     {
         id: "q20",
-        text: "bir sorunla karşılaştığında ilk tepkisi ne olur?",
-        options: ["Panikler", "Sakinleşmeye çalışır", "Birine danışır", "Ertelemeye çalışır", "Şakaya vurur"],
+        text: "Bir sorunla karşılaştığında ilk tepkisi ne olur?",
+        options: [
+            "Panikler 😵",
+            "Sakinleşmeye çalışır 😮‍💨",
+            "Birine danışır 🗣️",
+            "Ertelemeye çalışır 💤",
+            "Şakaya vurur 😅",
+        ],
     },
 ];
 
@@ -333,7 +364,7 @@ export default function CreatePage() {
                             <div className="space-y-6">
                                 <div className="space-y-2">
                                     <p className="text-sm font-semibold uppercase tracking-[0.16em] app-text-muted">
-                                        Arkadaşlık testi
+                                        💘 Arkadaşlık testi
                                     </p>
                                     <h1 className="text-3xl font-bold app-text-main">
                                         Testini hazırlamaya başla
@@ -345,7 +376,7 @@ export default function CreatePage() {
                                 </div>
                                 <div className="space-y-2">
                                     <label className="text-base font-semibold app-text-main">
-                                        Bu testi kim hazırlıyor? (Adın)
+                                        Bu testi kim hazırlıyor?
                                     </label>
                                     <input
                                         value={creatorName}
@@ -422,7 +453,7 @@ export default function CreatePage() {
                                                         disabled={isComplete}
                                                         className="group rounded-xl border app-card bg-white px-4 py-3 text-left font-semibold app-text-main transition hover:-translate-y-[1px] hover:shadow disabled:cursor-not-allowed disabled:opacity-50"
                                                     >
-                                                        <span className="mt-1 block text-lg font-bold app-text-main">
+                                                        <span className="mt-1 block text-lg font-light app-text-main">
                                                             {option}
                                                         </span>
                                                     </button>
