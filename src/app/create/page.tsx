@@ -204,6 +204,8 @@ export default function CreatePage() {
     const [showSharePanel, setShowSharePanel] = useState(false);
     const [copyStatus, setCopyStatus] = useState<"idle" | "copied">("idle");
 
+    const [createdTestCode, setCreatedTestCode] = useState<string | null>(null);
+
     // isim + akış kontrolü
     const [creatorName, setCreatorName] = useState("");
     const [hasStarted, setHasStarted] = useState(false);
@@ -301,9 +303,22 @@ export default function CreatePage() {
             return;
         }
 
+        // ✅ Eğer bu sayfa oturumunda zaten bir test oluşturduysak
+        // yeniden Supabase'e insert YAPMA, aynı linki tekrar göster.
+        if (createdTestCode) {
+            const origin = typeof window !== "undefined" ? window.location.origin : "";
+            const link = origin ? `${origin}/test/${createdTestCode}` : `/test/${createdTestCode}`;
+
+            setShareLink(link);
+            setShowSharePanel(true);
+            setCopyStatus("idle");
+            return;
+        }
+
         setSavingTest(true);
         setSaveError(null);
 
+        // Yeni test için tek seferlik code üret
         const code = Math.random().toString(36).slice(2, 8).toUpperCase();
 
         const questionsPayload = selectedQuestions.map((item) => {
@@ -329,7 +344,7 @@ export default function CreatePage() {
             return;
         }
 
-        // 👉 BU CİHAZ İÇİN LOCALSTORAGE'A DA KAYDET
+        // 👉 Bu cihaz için localStorage'a da kaydet
         addStoredTest({
             id: code,
             creatorName: creatorName.trim(),
@@ -339,11 +354,15 @@ export default function CreatePage() {
         const origin = typeof window !== "undefined" ? window.location.origin : "";
         const link = origin ? `${origin}/test/${code}` : `/test/${code}`;
 
+        // ✅ Artık bu oturumda bu testin tek kodu var
+        setCreatedTestCode(code);
+
         setShareLink(link);
         setShowSharePanel(true);
         setCopyStatus("idle");
         setSavingTest(false);
     };
+
 
     const handleCopyLink = async () => {
         if (!shareLink) return;
@@ -439,7 +458,7 @@ export default function CreatePage() {
                                     {currentQuestion && !showCustomEditor && (
                                         <div className="space-y-5">
                                             <div className="space-y-1">
-                                                <h2 className="text-xl font-bold app-text-main">
+                                                <h2 className="text-xl font-medium app-text-main">
                                                     {creatorName} {currentQuestion.text}
                                                 </h2>
                                             </div>

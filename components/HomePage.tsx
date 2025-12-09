@@ -24,7 +24,7 @@ export default function HomePage() {
         <section className="rounded-3xl border app-card bg-white/80 p-8 shadow-sm backdrop-blur space-y-4">
           <div className="space-y-2">
             <p className="text-sm font-semibold uppercase tracking-[0.16em] app-text-muted">
-              Arkadaşlık testi
+              💘 Arkadaşlık testi
             </p>
             <h1 className="text-3xl font-bold app-text-main">
               Arkadaşların seni ne kadar tanıyor? 💫
