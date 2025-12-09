@@ -29,7 +29,7 @@ export default function HomePage() {
             <h1 className="text-3xl font-bold app-text-main">
               Arkadaşların seni ne kadar tanıyor? 💫
             </h1>
-            <p className="text-sm app-text-muted">
+            <p className="text-base app-text-muted">
               Flovi arkadaşlık testi, seni ne kadar tanıdıklarını görmek için hazırlanmış küçük ve
               eğlenceli bir oyun. Kendin hakkında kısa bir test hazırlanır, linki arkadaşlarınla
               paylaşırsın ve cevaplar sonuç ekranında karşılaştırılır.
