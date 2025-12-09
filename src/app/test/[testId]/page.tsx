@@ -279,7 +279,7 @@ export default function TestSolvePage() {
                                         type="button"
                                         onClick={() => handleAnswer(option)}
                                         disabled={isAnswered || isRevealing}
-                                        className={`rounded-xl border ${border} ${bg} px-4 py-3 text-left text-sm font-semibold ${text} transition 
+                                        className={`rounded-xl border ${border} ${bg} px-4 py-3 text-left text-sm font-light ${text} transition 
                       hover:-translate-y-[1px] hover:shadow disabled:cursor-not-allowed`}
                                     >
                                         {option}
