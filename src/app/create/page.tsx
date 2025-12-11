@@ -529,21 +529,22 @@ export default function CreatePage() {
                                                 </h2>
                                             </div>
 
-                                            <div className="grid gap-3 sm:grid-cols-2">
+                                            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                                                 {currentQuestion.options.map((option, index) => (
                                                     <button
                                                         key={`${option}-${index}`}
                                                         type="button"
                                                         onClick={() => handleSelect(option)}
                                                         disabled={isComplete}
-                                                        className="group rounded-xl border app-card bg-white px-4 py-3 text-left font-semibold app-text-main transition hover:-translate-y-[1px] hover:shadow disabled:cursor-not-allowed disabled:opacity-50"
+                                                        className="group w-full rounded-xl border app-card bg-white px-4 py-3 text-left font-semibold app-text-main transition hover:-translate-y-[1px] hover:shadow disabled:cursor-not-allowed disabled:opacity-50"
                                                     >
-                                                        <span className="mt-1 block text-lg font-light app-text-main">
+                                                        <span className="mt-1 block text-base sm:text-lg font-light app-text-main whitespace-normal break-words">
                                                             {option}
                                                         </span>
                                                     </button>
                                                 ))}
                                             </div>
+
 
                                             {isComplete && (
                                                 <p className="rounded-lg border app-card bg-white px-3 py-2 text-sm font-semibold app-text-muted">
@@ -582,7 +583,10 @@ export default function CreatePage() {
                                                 </label>
                                                 <div className="space-y-2">
                                                     {customOptions.map((opt, idx) => (
-                                                        <div key={idx} className="flex gap-2">
+                                                        <div
+                                                            key={idx}
+                                                            className="flex flex-col gap-2 sm:flex-row sm:items-center"
+                                                        >
                                                             <input
                                                                 value={opt}
                                                                 onChange={(e) =>
@@ -593,13 +597,13 @@ export default function CreatePage() {
                                                                     })
                                                                 }
                                                                 placeholder={`Seçenek ${idx + 1}`}
-                                                                className="flex-1 rounded-xl border app-card-soft px-3 py-2 text-sm app-text-main outline-none transition focus:ring-2"
+                                                                className="w-full sm:flex-1 rounded-xl border app-card-soft px-3 py-2 text-sm app-text-main outline-none transition focus:ring-2"
                                                             />
                                                             {customOptions.length > MIN_CUSTOM_OPTIONS && (
                                                                 <button
                                                                     type="button"
                                                                     onClick={() => handleRemoveCustomOption(idx)}
-                                                                    className="rounded-xl border border-rose-200 bg-white px-2 text-xs font-semibold text-rose-600 hover:bg-rose-50"
+                                                                    className="sm:shrink-0 rounded-xl border border-rose-200 bg-white px-3 py-2 text-xs font-semibold text-rose-600 hover:bg-rose-50"
                                                                 >
                                                                     Sil
                                                                 </button>
@@ -607,6 +611,7 @@ export default function CreatePage() {
                                                         </div>
                                                     ))}
                                                 </div>
+
                                                 <button
                                                     type="button"
                                                     onClick={handleAddCustomOption}
