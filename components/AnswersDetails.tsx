@@ -13,7 +13,7 @@ type ResultRow = {
     name: string;
     score: number;
     created_at: string;
-    answers: Record<string, string>;
+    answers: Record<string, string> | null; // ✅ nullable
 };
 
 type Props = {
@@ -22,7 +22,7 @@ type Props = {
     questions: TestQuestion[];
 };
 
-export default function ResultRowWithDetails({ row, rank, questions }: Props) {
+export default function AnswersDetails({ row, rank, questions }: Props) {
     const [open, setOpen] = useState(false);
 
     const isFirst = rank === 1;
@@ -43,7 +43,8 @@ export default function ResultRowWithDetails({ row, rank, questions }: Props) {
         rankEmoji = "🥉";
     }
 
-    const playerAnswers = row.answers;
+    // ✅ null gelebilir -> güvenli hale getir
+    const playerAnswers: Record<string, string> = row.answers ?? {};
 
     const correctCount = questions.reduce((acc, q) => {
         return acc + (playerAnswers[q.id] === q.answer ? 1 : 0);
@@ -51,7 +52,6 @@ export default function ResultRowWithDetails({ row, rank, questions }: Props) {
 
     return (
         <li className="px-4 py-3 text-sm">
-            {/* üst satır */}
             <div className="flex items-center justify-between gap-3">
                 <div className="flex items-center gap-3">
                     <span
@@ -61,7 +61,7 @@ export default function ResultRowWithDetails({ row, rank, questions }: Props) {
                     </span>
 
                     <div>
-                        <p className="font-semibold text-rose-900">{row.name}</p>
+                        <p className="font-semibold text-rose-900">{row.name || "İsimsiz"}</p>
                         <p className="text-[11px] text-rose-500">
                             {new Date(row.created_at).toLocaleString("tr-TR", {
                                 day: "2-digit",
@@ -89,7 +89,6 @@ export default function ResultRowWithDetails({ row, rank, questions }: Props) {
                 </div>
             </div>
 
-            {/* detay */}
             {open && (
                 <div className="mt-3 rounded-2xl border border-rose-100 bg-white/90 px-3 py-3">
                     <p className="mb-3 text-[11px] text-rose-600">
@@ -109,10 +108,7 @@ export default function ResultRowWithDetails({ row, rank, questions }: Props) {
                                 ? "border-l-4 border-l-emerald-400"
                                 : "border-l-4 border-l-rose-500";
 
-                            // içerik fontu kalın değil
-                            const givenColor = isCorrect
-                                ? "text-emerald-700 font-normal"
-                                : "text-rose-700 font-normal";
+                            const givenColor = isCorrect ? "text-emerald-700" : "text-rose-700";
 
                             return (
                                 <div
@@ -143,7 +139,7 @@ export default function ResultRowWithDetails({ row, rank, questions }: Props) {
 
                                         <div className="rounded-lg bg-rose-50/40 px-2 py-1">
                                             <p className="text-rose-500 font-semibold">Verdiği Cevap</p>
-                                            <p className={givenColor}>{given}</p>
+                                            <p className={`${givenColor} font-normal`}>{given}</p>
                                         </div>
                                     </div>
                                 </div>
@@ -151,7 +147,7 @@ export default function ResultRowWithDetails({ row, rank, questions }: Props) {
                         })}
                     </div>
 
-                    {/* ✅ DESKTOP/TABLET TABLO (sm ve üstü) */}
+                    {/* ✅ DESKTOP/TABLET TABLO */}
                     <div className="hidden sm:block">
                         <table className="min-w-full border-collapse text-xs">
                             <thead>
@@ -174,11 +170,7 @@ export default function ResultRowWithDetails({ row, rank, questions }: Props) {
                                         ? "border-l-4 border-l-emerald-400"
                                         : "border-l-4 border-l-rose-500";
 
-                                    // içerik fontu kalın değil
-                                    const givenColor = isCorrect
-                                        ? "text-emerald-700 font-normal"
-                                        : "text-rose-700 font-normal";
-
+                                    const givenColor = isCorrect ? "text-emerald-700" : "text-rose-700";
                                     const tdBase = `px-2 py-2 align-top bg-white border-y ${rowBorder}`;
 
                                     return (
@@ -189,11 +181,9 @@ export default function ResultRowWithDetails({ row, rank, questions }: Props) {
 
                                             <td className={`${tdBase} text-rose-900`}>{q.text}</td>
 
-                                            <td className={`${tdBase} text-emerald-800 font-normal`}>
-                                                {q.answer}
-                                            </td>
+                                            <td className={`${tdBase} text-emerald-800 font-normal`}>{q.answer}</td>
 
-                                            <td className={`${tdBase} ${givenColor}`}>{given}</td>
+                                            <td className={`${tdBase} ${givenColor} font-normal`}>{given}</td>
 
                                             <td className={`${tdBase} rounded-r-xl`}>
                                                 <span
