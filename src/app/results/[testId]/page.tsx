@@ -4,12 +4,24 @@ import { useEffect, useMemo, useState } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
 import { supabase } from "../../../../lib/supabaseClient";
+import AnswersDetails from "../../../../components/AnswersDetails";
+
+type TestQuestion = {
+    id: string;
+    text: string;
+    answer: string;
+};
+
+type TestRow = {
+    questions: TestQuestion[];
+};
 
 type ResultRow = {
     id: string;
     name: string;
     score: number;
     created_at: string;
+    answers: Record<string, string> | null;
 };
 
 export default function ResultsPage() {
@@ -19,6 +31,7 @@ export default function ResultsPage() {
     const [loading, setLoading] = useState(true);
     const [loadError, setLoadError] = useState<string | null>(null);
     const [results, setResults] = useState<ResultRow[]>([]);
+    const [questions, setQuestions] = useState<TestQuestion[]>([]);
 
     // İstatistikler
     const totalPlayers = results.length;
@@ -33,31 +46,55 @@ export default function ResultsPage() {
     }, [results]);
 
     useEffect(() => {
-        const fetchResults = async () => {
+        const fetchAll = async () => {
             if (!testId) return;
 
             setLoading(true);
             setLoadError(null);
 
-            const { data, error } = await supabase
+            // 1) Sonuçlar (answers ile birlikte)
+            const { data: resultsData, error: resultsError } = await supabase
                 .from("test_results")
-                .select("id, name, score, created_at")
+                .select("id, name, score, created_at, answers")
                 .eq("test_id", testId)
                 .order("score", { ascending: false })
                 .order("created_at", { ascending: true });
 
-            if (error) {
-                console.error("Sonuçlar yüklenirken hata:", error);
+            if (resultsError) {
+                console.error("Sonuçlar yüklenirken hata:", resultsError);
                 setLoadError("Bu teste ait sonuçlar yüklenirken bir sorun oluştu.");
                 setLoading(false);
                 return;
             }
 
-            setResults(data ?? []);
+            setResults(
+                (resultsData ?? []).map((r: any) => ({
+                    id: r.id,
+                    name: r.name,
+                    score: r.score,
+                    created_at: r.created_at,
+                    answers: (r.answers || null) as Record<string, string> | null,
+                }))
+            );
+
+            // 2) Test soruları (doğru cevapları bilmek için)
+            const { data: testData, error: testError } = await supabase
+                .from("tests")
+                .select("questions")
+                .eq("id", testId)
+                .single<TestRow>();
+
+            if (testError) {
+                console.error("Test soruları yüklenirken hata:", testError);
+                setQuestions([]);
+            } else {
+                setQuestions(testData?.questions ?? []);
+            }
+
             setLoading(false);
         };
 
-        fetchResults();
+        fetchAll();
     }, [testId]);
 
     if (loading) {
@@ -95,7 +132,8 @@ export default function ResultsPage() {
                             Bu testin skor tablosu 🌈
                         </h1>
                         <p className="mt-1 text-xs text-rose-600">
-                            Arkadaşlarının aldığı puanları burada görebilirsin; her biri küçük bir “seni ne kadar tanıyorum?” cevabı. 💌
+                            Arkadaşlarının aldığı puanları burada görebilirsin; her biri küçük bir
+                            “seni ne kadar tanıyorum?” cevabı. 💌
                         </p>
                     </div>
                 </header>
@@ -151,58 +189,14 @@ export default function ResultsPage() {
 
                             <div className="overflow-hidden rounded-2xl border border-rose-100 bg-rose-50/60">
                                 <ul className="divide-y divide-rose-100">
-                                    {results.map((row, index) => {
-                                        const rank = index + 1;
-                                        const isFirst = rank === 1;
-                                        const isSecond = rank === 2;
-                                        const isThird = rank === 3;
-
-                                        let badgeBg = "bg-rose-100 text-rose-700";
-                                        let rankEmoji = "";
-
-                                        if (isFirst) {
-                                            badgeBg = "bg-yellow-200 text-yellow-900";
-                                            rankEmoji = "🥇";
-                                        } else if (isSecond) {
-                                            badgeBg = "bg-slate-200 text-slate-800";
-                                            rankEmoji = "🥈";
-                                        } else if (isThird) {
-                                            badgeBg = "bg-amber-200 text-amber-900";
-                                            rankEmoji = "🥉";
-                                        }
-
-                                        return (
-                                            <li
-                                                key={row.id}
-                                                className="flex items-center justify-between px-4 py-3 text-sm"
-                                            >
-                                                <div className="flex items-center gap-3">
-                                                    <span
-                                                        className={`flex h-7 min-w-[2.1rem] items-center justify-center rounded-full text-xs font-bold ${badgeBg}`}
-                                                    >
-                                                        {rankEmoji || rank}
-                                                    </span>
-                                                    <div>
-                                                        <p className="font-semibold text-rose-900">
-                                                            {row.name}
-                                                        </p>
-                                                        <p className="text-[11px] text-rose-500">
-                                                            {new Date(row.created_at).toLocaleString("tr-TR", {
-                                                                day: "2-digit",
-                                                                month: "2-digit",
-                                                                hour: "2-digit",
-                                                                minute: "2-digit",
-                                                            })}
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                                <span className="rounded-full bg-white px-3 py-1 text-xs font-semibold text-rose-700 border border-rose-100">
-                                                    {row.score}
-                                                    <span className="opacity-70"> puan</span>
-                                                </span>
-                                            </li>
-                                        );
-                                    })}
+                                    {results.map((row, index) => (
+                                        <AnswersDetails
+                                            key={row.id}
+                                            row={row}
+                                            rank={index + 1}
+                                            questions={questions}
+                                        />
+                                    ))}
                                 </ul>
                             </div>
                         </div>

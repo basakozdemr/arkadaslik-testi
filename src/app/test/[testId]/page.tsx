@@ -121,7 +121,7 @@ export default function TestSolvePage() {
         }
     };
 
-    // Skoru Supabase test_results tablosuna kaydet
+    // Skoru + cevapları Supabase test_results tablosuna kaydet
     useEffect(() => {
         const saveResult = async () => {
             if (score === null || !testId || !playerName.trim() || resultSaved || savingResult)
@@ -134,6 +134,7 @@ export default function TestSolvePage() {
                 test_id: testId,
                 name: playerName.trim(),
                 score: score,
+                answers: answers, // 👈 BURADA TÜM SORU CEVAPLARINI JSON OLARAK GÖNDERİYORUZ
             });
 
             if (error) {
@@ -148,7 +149,9 @@ export default function TestSolvePage() {
         };
 
         saveResult();
-    }, [score, testId, playerName, resultSaved, savingResult]);
+        // 👇 answers'ı da dependency listesine ekliyoruz
+    }, [score, testId, playerName, resultSaved, savingResult, answers]);
+
 
     const handleRestart = () => {
         setCurrentIndex(0);
