@@ -14,6 +14,11 @@ const sourGummy = Sour_Gummy({
 export const metadata: Metadata = {
   title: "Flovi - Arkadaşlık Testi💘",
   description: "Flovi Arkadaşlık Testi ile arkadaşlarının seni ne kadar tanıdığını keşfet! Kişisel sorularla kendi testini oluştur, linki paylaş ve kim seni daha iyi tanıyor gör. Ücretsiz ve eğlenceli.🚀",
+  icons: {
+    icon: "/favicon.ico",
+    shortcut: "/favicon.ico",
+    apple: "/logo.png",
+  },
 };
 
 export default function RootLayout({
