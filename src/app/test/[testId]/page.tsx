@@ -230,6 +230,13 @@ export default function TestSolvePage() {
                             <span>Teste başla</span>
                             <span>🚀</span>
                         </button>
+                        <Link
+                            href={`/results/${testId}`}
+                            className="inline-flex items-center justify-center gap-1 rounded-full border border-rose-300 bg-white px-5 py-2 text-sm font-semibold text-rose-700 shadow-sm transition hover:border-rose-400 hover:text-rose-800"
+                        >
+                            <span>Skor tablosunu gör</span>
+                            <span>📊</span>
+                        </Link>
                     </main>
                 )}
 
