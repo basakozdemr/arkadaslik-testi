@@ -27,6 +27,12 @@ type ResultRow = {
 export default function ResultsPage() {
     const params = useParams<{ testId: string }>();
     const testId = params?.testId as string;
+    const [canSeeDetails, setCanSeeDetails] = useState(false);
+
+    useEffect(() => {
+        const ok = localStorage.getItem(`solved:${testId}`) === "1";
+        setCanSeeDetails(ok);
+    }, [testId]);
 
     const [loading, setLoading] = useState(true);
     const [loadError, setLoadError] = useState<string | null>(null);
@@ -187,18 +193,25 @@ export default function ResultsPage() {
                                 </p>
                             </div>
 
-                            <div className="overflow-hidden rounded-2xl border border-rose-100 bg-rose-50/60">
-                                <ul className="divide-y divide-rose-100">
-                                    {results.map((row, index) => (
-                                        <AnswersDetails
-                                            key={row.id}
-                                            row={row}
-                                            rank={index + 1}
-                                            questions={questions}
-                                        />
-                                    ))}
-                                </ul>
-                            </div>
+                            {canSeeDetails ? (
+                                <div className="overflow-hidden rounded-2xl border border-rose-100 bg-rose-50/60">
+                                    <ul className="divide-y divide-rose-100">
+                                        {results.map((row, index) => (
+                                            <AnswersDetails
+                                                key={row.id}
+                                                row={row}
+                                                rank={index + 1}
+                                                questions={questions}
+                                            />
+                                        ))}
+                                    </ul>
+                                </div>
+                            ) : (
+                                <div className="rounded-2xl border border-rose-100 bg-white/90 p-4 text-sm text-rose-700">
+                                    Detayları görmek için testi çözmen gerekiyor 🔒
+                                </div>
+                            )}
+
                         </div>
                     )}
                 </main>
