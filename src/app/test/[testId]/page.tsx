@@ -145,6 +145,10 @@ export default function TestSolvePage() {
             }
 
             setResultSaved(true);
+
+            // ✅ bu cihazda bu test çözüldü işareti
+            localStorage.setItem(`solved:${testId}`, "1");
+
             setSavingResult(false);
         };
 

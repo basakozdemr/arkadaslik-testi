@@ -27,6 +27,14 @@ type ResultRow = {
 export default function ResultsPage() {
     const params = useParams<{ testId: string }>();
     const testId = params?.testId as string;
+    const [canSeeDetails, setCanSeeDetails] = useState(false);
+
+    useEffect(() => {
+        const solved = localStorage.getItem(`solved:${testId}`) === "1";
+        const isCreator = localStorage.getItem(`creator:${testId}`) === "1";
+        setCanSeeDetails(solved || isCreator);
+    }, [testId]);
+
 
     const [loading, setLoading] = useState(true);
     const [loadError, setLoadError] = useState<string | null>(null);
@@ -189,16 +197,45 @@ export default function ResultsPage() {
 
                             <div className="overflow-hidden rounded-2xl border border-rose-100 bg-rose-50/60">
                                 <ul className="divide-y divide-rose-100">
-                                    {results.map((row, index) => (
-                                        <AnswersDetails
-                                            key={row.id}
-                                            row={row}
-                                            rank={index + 1}
-                                            questions={questions}
-                                        />
-                                    ))}
+                                    {results.map((row, index) =>
+                                        canSeeDetails ? (
+                                            <AnswersDetails
+                                                key={row.id}
+                                                row={row}
+                                                rank={index + 1}
+                                                questions={questions}
+                                            />
+                                        ) : (
+                                            <li
+                                                key={row.id}
+                                                className="flex items-center justify-between gap-3 px-4 py-3 text-sm"
+                                            >
+                                                <div className="flex items-center gap-2">
+                                                    <span className="font-semibold text-rose-900">#{index + 1}</span>
+                                                    <span className="text-rose-800">{row.name}</span>
+                                                </div>
+
+                                                <div className="flex items-center gap-3">
+                                                    <span className="rounded-full bg-white/70 px-3 py-1 text-xs font-semibold text-rose-700 border border-rose-100">
+                                                        Skor: {row.score}
+                                                    </span>
+                                                    <span className="text-xs font-semibold text-rose-500">
+                                                        Detay gizli 🔒
+                                                    </span>
+                                                </div>
+                                            </li>
+                                        )
+                                    )}
                                 </ul>
+
+                                {!canSeeDetails && (
+                                    <div className="border-t border-rose-100 bg-white/60 px-4 py-3 text-center text-xs text-rose-600">
+                                        Hangi soruya ne cevap verildiği ve doğru cevaplar bu cihazda testi çözene gösterilir.
+                                    </div>
+                                )}
                             </div>
+
+
                         </div>
                     )}
                 </main>

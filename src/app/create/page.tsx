@@ -404,12 +404,16 @@ export default function CreatePage() {
             return;
         }
 
+        // ✅ Bu cihaz testin "creator" cihazı
+        localStorage.setItem(`creator:${code}`, "1");
+
         // 👉 Bu cihaz için localStorage'a da kaydet
         addStoredTest({
             id: code,
             creatorName: creatorName.trim(),
             createdAt: new Date().toISOString(),
         });
+
 
         const origin = typeof window !== "undefined" ? window.location.origin : "";
         const link = origin ? `${origin}/test/${code}` : `/test/${code}`;
